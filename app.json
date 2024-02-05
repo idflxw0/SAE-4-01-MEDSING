@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "medsing",
+    "slug": "medsing",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
