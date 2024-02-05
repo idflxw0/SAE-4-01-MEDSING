@@ -1,5 +1,7 @@
+// src/SplashScreen.js
 import React, { useEffect } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { Text, Image, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SplashScreen = ({ navigation }) => {
     useEffect(() => {
@@ -14,10 +16,13 @@ const SplashScreen = ({ navigation }) => {
     }, [navigation]);
 
     return (
-        <View style={styles.container}>
+        <LinearGradient
+            colors={['#B7FFB1', '#FFE500']}
+            style={styles.container}
+        >
             <Image source={require('../../assets/MEDSING.png')} style={styles.logo} />
             <Text style={styles.appName}>MEDESING</Text>
-        </View>
+        </LinearGradient>
     );
 };
 
@@ -26,17 +31,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ffffff', // Set your background color
     },
     logo: {
         width: 150,
         height: 150,
-        resizeMode: 'contain', // Adjust the image content mode based on your logo
+        resizeMode: 'contain',
     },
     appName: {
         marginTop: 20,
         fontSize: 24,
         fontWeight: 'bold',
+        color: '#ffffff', // Set text color to white or another contrasting color
     },
 });
 

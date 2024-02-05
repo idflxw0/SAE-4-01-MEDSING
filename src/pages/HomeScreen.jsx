@@ -9,7 +9,7 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.description}>
                 This is the home screen of your app. Add your main content here.
             </Text>
-            
+
         </View>
     );
 };
