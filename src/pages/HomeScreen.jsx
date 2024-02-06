@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
+import {LinearGradient} from "expo-linear-gradient";
 
 const HomeScreen = ({ navigation }) => {
     const [cipCode, setCipCode] = useState('');
@@ -24,16 +25,36 @@ const HomeScreen = ({ navigation }) => {
                 onChangeText={text => setCipCode(text)}
                 value={cipCode}
             />
+            <LinearGradient
+                // Background Linear Gradient
+                colors={['rgba(183,255,177,1)', 'transparent']}
+                style={styles.background}
+            />
+            <Text style={styles.heading}>Welcome to MEDESING!</Text>
+            <Text style={styles.description}>
+                This is the home screen of your app. Add your main content here.
+            </Text>
+            <Button
+                title="Go to Splash Screen"
+                onPress={() => navigation.navigate('SplashScreen')}
+            />
             <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
                 <Text style={styles.submitButtonText}>Soumettre</Text>
             </TouchableOpacity>
             <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
-            <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
+            <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    background: {
+        width: '100%',     // Set width to the screen width
+        height: '100%',   // Set height to the screen height
+        position: 'absolute', // Use absolute positioning to overlay
+        top: 0,
+        left: 0
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
