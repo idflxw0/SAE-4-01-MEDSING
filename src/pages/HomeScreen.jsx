@@ -1,4 +1,3 @@
-// src/HomeScreen.js
 import React, { useState } from 'react';
 import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
@@ -10,10 +9,16 @@ const HomeScreen = ({ navigation }) => {
     const handleSubmit = () => {
         // Handle submission of CIP code
         console.log('Submitted CIP Code:', cipCode);
+        navigation.navigate('SplashScreen')
     };
 
     return (
         <View style={styles.container}>
+            <LinearGradient
+                // Background Linear Gradient
+                colors={['#B7FFB1', '#FFE500']}
+                style={styles.background}
+            />
             <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
                 <Ionicons name="menu" size={40} color="black" />
             </TouchableOpacity>
@@ -25,24 +30,13 @@ const HomeScreen = ({ navigation }) => {
                 onChangeText={text => setCipCode(text)}
                 value={cipCode}
             />
-            <LinearGradient
-                // Background Linear Gradient
-                colors={['rgba(183,255,177,1)', 'transparent']}
-                style={styles.background}
-            />
-            <Text style={styles.heading}>Welcome to MEDESING!</Text>
-            <Text style={styles.description}>
-                This is the home screen of your app. Add your main content here.
-            </Text>
-            <Button
-                title="Go to Splash Screen"
-                onPress={() => navigation.navigate('SplashScreen')}
-            />
+
             <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
                 <Text style={styles.submitButtonText}>Soumettre</Text>
             </TouchableOpacity>
             <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
-            <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
+            <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
+
         </View>
     );
 };
@@ -70,6 +64,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         marginBottom: 20,
+        color: '#000000',
     },
     input: {
         width: '80%',

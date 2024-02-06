@@ -16,21 +16,13 @@ const SplashScreen = ({ navigation }) => {
     }, [navigation]);
 
     return (
-        /*<LinearGradient
-            colors={['#B7FFB1', '#FFE500']}
-            style={styles.container}
-        >
-            <Image source={require('../../assets/MEDSING.png')} style={styles.logo} />
-            <Text style={styles.appName}>MEDESING</Text>
-        </LinearGradient>*/
         <View style={styles.container}>
-                <LinearGradient
-                    // Background Linear Gradient
-                    colors={['rgba(183,255,177,1)', 'transparent']}
-                    style={styles.background}
-                />
+            <LinearGradient
+                // Background Linear Gradient
+                colors={['#B7FFB1', '#FFE500']}
+                style={styles.background}
+            />
                 <Image source={require('../../assets/MEDSING.png')} style={styles.logo} />
-                <Text style={styles.appName}>MEDESING</Text>
         </View>
     );
 };
