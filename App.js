@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
       <NavigationContainer>
-          <Stack.Navigator initialRouteName="SplashScreen" headerMode="none">
+          <Stack.Navigator initialRouteName="SplashScreen" headerShown="none">
               <Stack.Screen name="SplashScreen" component={SplashScreen} />
               <Stack.Screen name="HomeScreen" component={HomeScreen} />
           </Stack.Navigator>
@@ -35,5 +35,4 @@ const styles = StyleSheet.create({
         height: 200,
         margin: 10
     }
-
 });
