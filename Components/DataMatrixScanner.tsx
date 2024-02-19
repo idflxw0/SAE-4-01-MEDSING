@@ -1,54 +1,56 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Camera, CameraType, FlashMode} from 'expo-camera';
-import {Entypo} from "@expo/vector-icons";
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CameraView, useCameraPermissions, FlashMode } from 'expo-camera/next';
+import { Entypo } from '@expo/vector-icons';
 
 const DataMatrixScanner = () => {
-    const[hasCameraPermission, setHasCameraPermission] = useState(null);
-    const [type, setType] = useState(CameraType.back);
-    const [flash, setFlash] = useState(FlashMode.off);
+    const [permission, requestPermission] = useCameraPermissions();
+    const [enableTorch, setTorch] = useState(false);
     const cameraRef = useRef(null);
 
-
-    useEffect(()=> {
+    useEffect(() => {
         (async () => {
-            const cameraStatus = await Camera.requestCameraPermissionsAsync();
-            setHasCameraPermission(cameraStatus.status === 'granted');
-            if (cameraStatus.status ==='granted') {
-                console.log("granted")
-            } else console.log('not granted');
+            const { status } = await requestPermission();
+            if (status !== 'granted') {
+                alert('Sorry, we need camera permissions to make this work!');
+            }
         })();
     }, []);
 
     const activateFlash = () => {
-        setFlash(flash === FlashMode.off ? FlashMode.torch : FlashMode.off)
-        console.log(flash);
-    }
-    const flashColor = () => {
-        return flash === 'off' ? 'gray' : '#f1f1f1';
+        setTorch((prevTorch) => !prevTorch);
+    };
+
+    if (!permission || permission.status !== 'granted') {
+        return <Text style={styles.refused}>No access to camera</Text>;
     }
 
-    if (hasCameraPermission === false) {
-        return <Text>No access to camera</Text>
-    }
+    const handleBarCodeScanned = ({ type, data }) => {
+        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    };
+
 
     return (
         <View style={styles.container}>
-             <Camera
+            <CameraView
+                mode={'picture'}
                 style={styles.camera}
-                type = {type}
-                flashMode={flash}
-                ref = {cameraRef}
-             >
+                ref={cameraRef}
+                enableTorch={enableTorch}
+                barcodeScannerSettings={{
+                    barcodeTypes: ['datamatrix']
+                }}
+                onBarcodeScanned={handleBarCodeScanned}
+            >
                 <View style={styles.flashContainer}>
-                    <TouchableOpacity style={styles.button} onPress={activateFlash} >
-                        <Entypo name={'flash'} size={28} color={flashColor()}/>
+                    <TouchableOpacity style={styles.button} onPress={activateFlash}>
+                        <Entypo name={'flash'} size={28} color={!enableTorch ? 'gray' : '#f1f1f1'} />
                     </TouchableOpacity>
                 </View>
-             </Camera>
+            </CameraView>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -56,20 +58,26 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     camera: {
-        flex : 1,
+        flex: 1,
     },
-    flashContainer : {
-        flexDirection : 'row',
-        justifyContent : 'flex-end',
+    flashContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
     },
     button: {
         width: 40,
-        height :40,
+        height: 40,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
         borderRadius: 20,
+    },
+    refused: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
     },
 });
 

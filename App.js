@@ -6,6 +6,8 @@ import SplashScreen from "./src/pages/SplashScreen";
 import HomeScreen from "./src/pages/HomeScreen";
 import DataMatrixScanner from "./Components/DataMatrixScanner";
 
+
+
 const Stack = createStackNavigator();
 
 export default function App() {
