@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
 import {LinearGradient} from "expo-linear-gradient";
-
+import DataMatrixScanner from "../../Components/DataMatrixScanner";
 const HomeScreen = ({ navigation }) => {
     const [cipCode, setCipCode] = useState('');
 
     const handleSubmit = () => {
         // Handle submission of CIP code
         console.log('Submitted CIP Code:', cipCode);
-        navigation.navigate('SplashScreen')
+        navigation.navigate('Scanner')
     };
 
     return (
@@ -34,6 +34,10 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
                 <Text style={styles.submitButtonText}>Soumettre</Text>
             </TouchableOpacity>
+            <Text style={styles.ScannerIndicator}> Flasher le code DataMatrix :</Text>
+            <View style={styles.ScannerContainer}>
+                <DataMatrixScanner/>
+            </View>
             <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
             <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
 
@@ -92,6 +96,19 @@ const styles = StyleSheet.create({
         top: '3%',
         right : '3%',
         marginTop: '5%',
+    },
+    ScannerIndicator : {
+        width : '50%',
+        textAlign: 'center',
+        fontSize : 20,
+        paddingBottom : 20
+
+    },
+    ScannerContainer : {
+        width : '60%',
+        height : '25%',
+        borderRadius : 20,
+        overflow :'hidden',
     },
     logo1: {
         position: 'absolute',

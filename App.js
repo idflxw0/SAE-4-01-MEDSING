@@ -4,15 +4,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from "./src/pages/SplashScreen";
 import HomeScreen from "./src/pages/HomeScreen";
+import DataMatrixScanner from "./Components/DataMatrixScanner";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
       <NavigationContainer>
-          <Stack.Navigator initialRouteName="SplashScreen" headerShown="none">
-              <Stack.Screen name="SplashScreen" component={SplashScreen} />
-              <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Navigator initialRouteName="SplashScreen" options={{ headerShown: false }}>
+              <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Scanner" component={DataMatrixScanner} options={{ headerShown: false }} />
           </Stack.Navigator>
       </NavigationContainer>
   );
