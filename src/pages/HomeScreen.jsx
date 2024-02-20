@@ -11,6 +11,10 @@ const HomeScreen = ({ navigation }) => {
         console.log('Submitted CIP Code:', cipCode);
         navigation.navigate('Scanner')
     };
+    const handleNavigateToSettings = () => {
+        navigation.navigate('Settings');
+    };
+
 
     return (
         <View style={styles.container}>
@@ -19,7 +23,10 @@ const HomeScreen = ({ navigation }) => {
                 colors={['#B7FFB1', '#FFE500']}
                 style={styles.background}
             />
-            <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+            {/*<TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+                <Ionicons name="menu" size={40} color="black" />
+            </TouchableOpacity>*/}
+            <TouchableOpacity onPress={handleNavigateToSettings} style={styles.menuButton}>
                 <Ionicons name="menu" size={40} color="black" />
             </TouchableOpacity>
             <Text style={styles.description}>Saisir le code CIP du médicament :</Text>
