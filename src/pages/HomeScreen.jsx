@@ -19,10 +19,7 @@ const HomeScreen = ({ navigation }) => {
                 cipCode: cipCode,
                 name: productName,
             };
-
-            // Add the new entry to the existing history
             setHistory(prevHistory => [newEntry,...prevHistory]);
-
             setProductName('');
             setCipCode('');
         }
@@ -64,7 +61,6 @@ const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <LinearGradient
-                // Background Linear Gradient
                 colors={['#B7FFB1', '#FFE500']}
                 style={styles.background}
             />
@@ -149,10 +145,10 @@ const styles = StyleSheet.create({
     submitButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 42, // This will now shape the LinearGradient
-        width: '100%', // Ensure it fills the wrapper
-        alignItems: 'center', // Center the text horizontally
-        justifyContent: 'center', // Center the text vertically
+        borderRadius: 42,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     buttonDisabled: {
         opacity: 0.5,
