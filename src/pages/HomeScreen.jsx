@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
+import { Ionicons,FontAwesome } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
 import {LinearGradient} from "expo-linear-gradient";
 import DataMatrixScanner from "../../Components/DataMatrixScanner";
+
 const HomeScreen = ({ navigation }) => {
     const [cipCode, setCipCode] = useState('');
 
     const handleSubmit = () => {
-        // Handle submission of CIP code
-        console.log('Submitted CIP Code:', cipCode);
-        navigation.navigate('Scanner')
+        navigation.navigate('SplashScreen')
     };
     const handleNavigateToSettings = () => {
         navigation.navigate('Settings');
+    };
+    const navigateHistory = () => {
+        navigation.navigate('History');
+    }
+    const handleCipCodeScanned = (cipCode) => {
+        setCipCode(cipCode);
+        // Now you can use cipCodeFromScanner for any logic you want here
+        console.log(setCipCode);
     };
 
 
@@ -37,13 +44,20 @@ const HomeScreen = ({ navigation }) => {
                 onChangeText={text => setCipCode(text)}
                 value={cipCode}
             />
-
-            <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
-                <Text style={styles.submitButtonText}>Soumettre</Text>
+            <TouchableOpacity onPress={navigateHistory}>
+                <FontAwesome name="history" size={24} color="black" style={styles.history} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSubmit} style={styles.submitButtonWrapper}>
+                <LinearGradient
+                    colors={['#E02A2A','rgba(224, 42, 42, 1)']}
+                    style={styles.submitButton}
+                >
+                    <Text style={styles.submitButtonText}>SIGNALER</Text>
+                </LinearGradient>
             </TouchableOpacity>
             <Text style={styles.ScannerIndicator}> Flasher le code DataMatrix :</Text>
             <View style={styles.ScannerContainer}>
-                <DataMatrixScanner/>
+                <DataMatrixScanner onCipCodeScanned={handleCipCodeScanned}/>
             </View>
             <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
             <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
@@ -86,12 +100,18 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingHorizontal: 10,
     },
+    submitButtonWrapper: {
+        borderRadius: 42, // Keep the border radius here to maintain the shape
+        marginBottom: 20, // And any other layout-related styles
+        overflow: 'hidden', // Ensures the LinearGradient respects the border radius
+    },
     submitButton: {
-        backgroundColor: '#E02A2A',
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 5,
-        marginBottom: 20,
+        borderRadius: 42, // This will now shape the LinearGradient
+        width: '100%', // Ensure it fills the wrapper
+        alignItems: 'center', // Center the text horizontally
+        justifyContent: 'center', // Center the text vertically
     },
     submitButtonText: {
         color: 'white',
@@ -133,6 +153,10 @@ const styles = StyleSheet.create({
         height: 150,
         resizeMode: 'contain',
     },
+    history: {
+       marginLeft : '50%',
+       top: '130%',
+    }
 });
 
 export default HomeScreen;
