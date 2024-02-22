@@ -10,6 +10,7 @@ const DataMatrixScanner = () => {
     const [permission, requestPermission] = useCameraPermissions();
     const timerRef = useRef(null);
     const lastTapRef = useRef(null); // Ref to store the last tap timestamp
+    const [scanned, setScan] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -64,10 +65,26 @@ const DataMatrixScanner = () => {
     };
 
     const handleBarCodeScanned = ({ type, data }) => {
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-        if (timerRef.current) {
-            clearTimeout(timerRef.current);
-            activateCamera();
+        if (!scanned) {
+            // Using Alert.alert to show the barcode data and to avoid spamming, we wait for the user to press "OK"
+            Alert.alert(
+                "Scan successful!",
+                `Bar code with type ${type} and data ${data} has been scanned!`,
+                [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            setScan(false); // Resetting scan state to allow for new scans
+                            if (timerRef.current) {
+                                clearTimeout(timerRef.current);
+                                activateCamera(); // Reactivate camera for next scan
+                            }
+                        }
+                    }
+                ],
+                { cancelable: false } // This forces the user to tap "OK" and not dismiss the alert by tapping outside of it
+            );
+            setScan(true); // Setting scanned state to true to prevent re-scanning until the alert is dismissed
         }
     };
 
