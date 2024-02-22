@@ -2,8 +2,10 @@ import React, {useState, useRef, useEffect} from 'react';
 import { StyleSheet, Text, TouchableOpacity, View,Alert} from 'react-native';
 import { CameraView, useCameraPermissions} from 'expo-camera/next';
 import { Entypo } from '@expo/vector-icons';
+import productList from '../data/data.json';
 
-const DataMatrixScanner = () => {
+
+const DataMatrixScanner = ({onCipCodeScanned}) => {
     const [cameraActive, setCameraActive] = useState(false);
     const [enableTorch, setTorch] = useState(false);
     const cameraRef = useRef(null);
@@ -25,16 +27,14 @@ const DataMatrixScanner = () => {
         const DOUBLE_TAP_DELAY = 500;
 
         if (lastTapRef.current && (now - lastTapRef.current) < DOUBLE_TAP_DELAY) {
-            setCameraActive(false); // Deactivate camera on double tap
+            setCameraActive(false); // double tap to deactivate
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
             }
             lastTapRef.current = null;
         } else {
-            // First tap or taps not within the double tap delay
             lastTapRef.current = now;
             if (!cameraActive) {
-                // Request permission and activate camera if it's not already active
                 if (!permission?.granted) {
                     const { status } = await requestPermission();
                     if (status === 'granted') {
@@ -64,26 +64,42 @@ const DataMatrixScanner = () => {
         setTorch((prevTorch) => !prevTorch);
     };
 
+    const extractCIPCode = (scannedData) => {
+        return scannedData.substring(4,17);
+    }
+
+    const resetScan =() => {
+        setScan(false);
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            activateCamera();
+        }
+    }
     const handleBarCodeScanned = ({ type, data }) => {
         if (!scanned) {
-            // Using Alert.alert to show the barcode data and to avoid spamming, we wait for the user to press "OK"
-            Alert.alert(
-                "Scan successful!",
-                `Bar code with type ${type} and data ${data} has been scanned!`,
-                [
-                    {
-                        text: "OK",
-                        onPress: () => {
-                            setScan(false); // Resetting scan state to allow for new scans
-                            if (timerRef.current) {
-                                clearTimeout(timerRef.current);
-                                activateCamera(); // Reactivate camera for next scan
-                            }
-                        }
-                    }
-                ],
-                { cancelable: false } // This forces the user to tap "OK" and not dismiss the alert by tapping outside of it
-            );
+            const cipCode = extractCIPCode(data);
+            const product = productList.find(p => String(p.CIP) === String(cipCode));
+            if (product) {
+                Alert.alert(
+                    "Scan successful!",
+                    `Product Name: ${product.Name}`, // Product found ^^
+                    [
+                        { text: "OK", onPress: () => resetScan() }
+                    ],
+                    { cancelable: false }
+                );
+                onCipCodeScanned(cipCode);
+            } else {
+                Alert.alert(
+                    "Product not found",
+                    "The scanned product does not exist in the database.",
+                    [
+                        { text: "OK", onPress: () => resetScan() }
+                    ],
+                    { cancelable: false }
+                );
+            }
+
             setScan(true); // Setting scanned state to true to prevent re-scanning until the alert is dismissed
         }
     };
@@ -101,6 +117,7 @@ const DataMatrixScanner = () => {
                         style={StyleSheet.absoluteFill}
                         ref={cameraRef}
                         enableTorch={enableTorch}
+
                         barcodeScannerSettings={{
                             barcodeTypes: ['datamatrix']
                         }}
