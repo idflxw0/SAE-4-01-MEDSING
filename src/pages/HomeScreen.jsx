@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
-import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image, Alert} from 'react-native';
 import { Ionicons,FontAwesome } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
 import {LinearGradient} from "expo-linear-gradient";
 import DataMatrixScanner from "../../Components/DataMatrixScanner";
+import ProductData from "../../data/data.json";
+import productList from "../../data/data.json";
 
 const HomeScreen = ({ navigation }) => {
-    const [data, setData] = useState('');
     const [cipCode, setCipCode] = useState('');
     const [productName, setProductName] = useState('');
     const [history, setHistory] = useState([]);
-    const handleSubmit = () => {
-        const newEntry = {
-            date: new Date().toLocaleDateString(),
-            cipCode: cipCode,
-            name: productName,
-        };
+    const [ValidProduct, setValidProduct] = useState(false);
 
-        // Add the new entry to the existing history
-        setHistory(prevHistory => [...prevHistory, newEntry]);
+    const handleSubmit = () => {
+        if (ValidProduct) {
+            const newEntry = {
+                date: new Date().toLocaleDateString(),
+                cipCode: cipCode,
+                name: productName,
+            };
+
+            // Add the new entry to the existing history
+            setHistory(prevHistory => [newEntry,...prevHistory]);
+
+            setProductName('');
+            setCipCode('');
+        }
+        else {
+            Alert.alert('Incorrect code CIP');
+        }
     };
     const handleNavigateToSettings = () => {
         navigation.navigate('Settings');
@@ -25,20 +36,31 @@ const HomeScreen = ({ navigation }) => {
     const navigateHistory = () => {
         navigation.navigate('History',{ history: history });
     }
-    const handleCipCodeScanned = (data) => {
-        setData(data);
-        setActualProduct();
-        console.log('actual cip code : ' + cipCode);
-        console.log('actual product name : '  + productName)
+    const handleCipCode = (data) => {
+        const product = productList.find(p => String(p.CIP) === String(data));
+        if (product) {
+            setCipCode(data);
+            setProductName(product.Name);
+            setValidProduct(true);
+            console.log('actual cip code : ' + cipCode);
+            console.log('actual product code : ' + productName);
+        } else {
+            setValidProduct(false);
+        }
     };
 
-    const setActualProduct = () => {
-        if (data !== '') {
-            const datas  = data.split(';');
-            setCipCode(datas[0]);
-            setProductName(datas[1]);
+    const onHandleSubmitPress = () => {
+        handleCipCode(cipCode);
+        if (ValidProduct) {
+            handleSubmit();
+        } else {
+            Alert.alert('Invalid CIP', 'The CIP code entered is not valid.');
         }
-    }
+    };
+    useEffect(() => {
+        handleCipCode(cipCode);
+    }, [cipCode]);
+
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -59,14 +81,15 @@ const HomeScreen = ({ navigation }) => {
                 placeholderTextColor="#999999"
                 onChangeText={text => {
                     const filteredText = text.replace(/[^0-9]/g, ''); // Remove non-numeric characters
-                    setCipCode(filteredText); // Update state with filtered text
+                    setCipCode(filteredText);
                 }}
                 value={cipCode}
+                maxLength={13}
             />
             <TouchableOpacity onPress={navigateHistory}>
                 <FontAwesome name="history" size={24} color="black" style={styles.history} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSubmit} style={styles.submitButtonWrapper}>
+            <TouchableOpacity onPress={onHandleSubmitPress} style={[styles.submitButtonWrapper, cipCode ? {} : styles.buttonDisabled]}>
                 <LinearGradient
                     colors={['#E02A2A','rgba(224, 42, 42, 1)']}
                     style={styles.submitButton}
@@ -76,7 +99,7 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={styles.ScannerIndicator}> Flasher le code DataMatrix :</Text>
             <View style={styles.ScannerContainer}>
-                <DataMatrixScanner onCipCodeScanned={handleCipCodeScanned}/>
+                <DataMatrixScanner onCipCodeScanned={handleCipCode}/>
             </View>
             <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
             <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
@@ -131,6 +154,9 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Center the text horizontally
         justifyContent: 'center', // Center the text vertically
     },
+    buttonDisabled: {
+        opacity: 0.5,
+    },
     submitButtonText: {
         color: 'white',
         fontSize: 16,
@@ -172,8 +198,8 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     history: {
-       marginLeft : '50%',
-       top: '130%',
+        marginLeft : '50%',
+        top: '130%',
     }
 });
 
