@@ -60,10 +60,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 10,
         marginBottom: '5%',
+        marginHorizontal: 10,
     },
     historyScrollView: {
         width: '100%',
-        paddingHorizontal: 10,
+        paddingHorizontal: 20,
     },
     historyEntry: {
         flexDirection: 'row',
