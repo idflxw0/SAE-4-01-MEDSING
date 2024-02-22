@@ -5,24 +5,40 @@ import {LinearGradient} from "expo-linear-gradient";
 import DataMatrixScanner from "../../Components/DataMatrixScanner";
 
 const HomeScreen = ({ navigation }) => {
+    const [data, setData] = useState('');
     const [cipCode, setCipCode] = useState('');
-
+    const [productName, setProductName] = useState('');
+    const [history, setHistory] = useState([]);
     const handleSubmit = () => {
-        navigation.navigate('SplashScreen')
+        const newEntry = {
+            date: new Date().toLocaleDateString(),
+            cipCode: cipCode,
+            name: productName,
+        };
+
+        // Add the new entry to the existing history
+        setHistory(prevHistory => [...prevHistory, newEntry]);
     };
     const handleNavigateToSettings = () => {
         navigation.navigate('Settings');
     };
     const navigateHistory = () => {
-        navigation.navigate('History');
+        navigation.navigate('History',{ history: history });
     }
-    const handleCipCodeScanned = (cipCode) => {
-        setCipCode(cipCode);
-        // Now you can use cipCodeFromScanner for any logic you want here
-        console.log(setCipCode);
+    const handleCipCodeScanned = (data) => {
+        setData(data);
+        setActualProduct();
+        console.log('actual cip code : ' + cipCode);
+        console.log('actual product name : '  + productName)
     };
 
-
+    const setActualProduct = () => {
+        if (data !== '') {
+            const datas  = data.split(';');
+            setCipCode(datas[0]);
+            setProductName(datas[1]);
+        }
+    }
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -41,7 +57,10 @@ const HomeScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Saisir le code ici..."
                 placeholderTextColor="#999999"
-                onChangeText={text => setCipCode(text)}
+                onChangeText={text => {
+                    const filteredText = text.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                    setCipCode(filteredText); // Update state with filtered text
+                }}
                 value={cipCode}
             />
             <TouchableOpacity onPress={navigateHistory}>
@@ -61,7 +80,6 @@ const HomeScreen = ({ navigation }) => {
             </View>
             <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
             <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
-
         </View>
     );
 };
