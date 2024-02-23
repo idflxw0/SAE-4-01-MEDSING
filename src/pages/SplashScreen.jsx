@@ -8,7 +8,7 @@ const SplashScreen = ({ navigation }) => {
         // Simulate a delay, for example, 2000ms (2 seconds)
         const splashTimeout = setTimeout(() => {
             // Navigate to the next screen (replace 'HomeScreen' with your desired screen name)
-            navigation.replace('HomeScreen');
+            navigation.replace('Landing');
         }, 2000);
 
         // Clear the timeout when the component unmounts

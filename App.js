@@ -15,11 +15,26 @@ import History from "./src/pages/History";
 import {LanguageProvider} from "./Components/LanguageContext";
 import ConfirmationPage from "./src/pages/ConfirmationPage";
 
+import SignInScreen from "./src/pages/LandingPages/ConnectingPage/SignInScreen";
+import SignUpScreen from "./src/pages/LandingPages/ConnectingPage/SignUp";
+import ResetConfirmation from "./src/pages/LandingPages/PasswordManagementPages/ResetConfirmation";
+import PasswordReset from "./src/pages/LandingPages/PasswordManagementPages/PasswordReset";
+import ForgotPassword from "./src/pages/LandingPages/PasswordManagementPages/ForgotPassword";
+import OnboardingScreen from "./src/pages/LandingPages/LandingPage";
+
 const Stack = createStackNavigator();
 export default function App() {
   return (
       <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen" options={{ headerShown: false }}>
+
+              <Stack.Screen name="Landing" component={OnboardingScreen} options={{ headerShown: false }}/>
+              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>
+              <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }}/>
+              <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }}/>
+              <Stack.Screen name="ResetConfirmation" component={ResetConfirmation} options={{ headerShown: false }}/>
+              <Stack.Screen name="PasswordReset" component={PasswordReset} options={{ headerShown: false }}/>
+
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="History" component={History} options={{ headerShown: false }} />
