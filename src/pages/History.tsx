@@ -43,7 +43,7 @@ const History = ({ navigation,route }) => {
         console.log('actual history data : ' + historyData);
         loadHistoryData()
             .then(() => console.log('History data loaded successfully.'))
-            .catch(e => console.error('Error loading history data', e));
+            .catch(e => console.error('Error loading  history data', e));
     }, []);
 
     return (

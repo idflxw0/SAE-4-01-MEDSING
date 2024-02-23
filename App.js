@@ -13,9 +13,9 @@ import AboutScreen from "./src/pages/reglage page/about";
 import HelpScreen from "./src/pages/reglage page/help";
 import History from "./src/pages/History";
 import {LanguageProvider} from "./Components/LanguageContext";
+import ConfirmationPage from "./src/pages/ConfirmationPage";
 
 const Stack = createStackNavigator();
-
 export default function App() {
   return (
       <NavigationContainer>
@@ -23,6 +23,7 @@ export default function App() {
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="History" component={History} options={{ headerShown: false }} />
+              <Stack.Screen name="ConfirmationPage" component={ConfirmationPage} options={{ headerShown: false }} />
 
               <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Language" component={LanguageScreen} options={{ headerShown: false }} />

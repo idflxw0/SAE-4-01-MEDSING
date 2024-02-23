@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image, Alert} from 'react-native';
-import { Ionicons,FontAwesome } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
+import { Ionicons,FontAwesome } from '@expo/vector-icons';
 import {LinearGradient} from "expo-linear-gradient";
 import DataMatrixScanner from "../../Components/DataMatrixScanner";
-import ProductData from "../../data/data.json";
 import productList from "../../data/data.json";
 
 const HomeScreen = ({ navigation }) => {
@@ -22,6 +21,7 @@ const HomeScreen = ({ navigation }) => {
             setHistory(prevHistory => [newEntry,...prevHistory]);
             setProductName('');
             setCipCode('');
+            navigation.navigate('ConfirmationPage');
         }
         else {
             Alert.alert('Incorrect code CIP');
