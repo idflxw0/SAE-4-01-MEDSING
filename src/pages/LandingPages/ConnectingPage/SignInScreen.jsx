@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons from expo/vector-icons
 import Header from '../components/Header';
 import CustomButton from "../components/CustomButton";
 
@@ -7,6 +8,7 @@ const SignInScreen = ({ navigation }) => {
     const MINIMAL_PASSWORD_LENGTH = 8;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
     const handlePasswordForgot = () => {
         navigation.navigate('ForgotPassword');
@@ -29,6 +31,9 @@ const SignInScreen = ({ navigation }) => {
         return isValid ? "Email is valid" : "Email isn't valid";
     }
 
+    function togglePasswordVisibility() {
+        setShowPassword(!showPassword);
+    }
 
     function checkPassword(password) {
         if (password.length < MINIMAL_PASSWORD_LENGTH) {
@@ -99,13 +104,21 @@ const SignInScreen = ({ navigation }) => {
             <Text style={getCheckerStyle(email, 'email')}>
                 {getMailChecker(checkMail(email))}
             </Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor="#ccc"
-                secureTextEntry={true}
-                onChangeText={(text) => setPassword(text)}
-            />
+            <View style={styles.passwordContainer}>
+                <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Password"
+                    placeholderTextColor="#ccc"
+                    secureTextEntry={!showPassword} // Show or hide password based on showPassword state
+                    onChangeText={(text) => setPassword(text)}
+                />
+                <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={togglePasswordVisibility}
+                >
+                    <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="#ccc" />
+                </TouchableOpacity>
+            </View>
             <Text style={getCheckerStyle(password, 'password')}>
                 {getPasswordChecker(checkPassword(password))}
             </Text>
@@ -215,6 +228,29 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginRight: 40,
         textAlign: "center"
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'relative',
+    },
+    passwordInput: {
+        flex: 1,
+        backgroundColor: '#222', // Input field color grading
+        borderColor: '#90909F',
+        borderWidth: 2,
+        borderRadius: 16,
+        color: '#fff',
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        marginTop: 15,
+        marginBottom: 15,
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10,
+        top: '50%',
+        transform: [{ translateY: -13 }],
     },
 });
 
