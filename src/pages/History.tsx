@@ -3,48 +3,10 @@ import {Text, View,StyleSheet,ScrollView,} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import Header from "../../Components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useHistoryData from "../../hook/useHistoryData";
+
 const History = ({ navigation,route }) => {
-    const [historyData, setHistoryData] = useState(route.params?.history ?? []);
-
-    useEffect(() => {
-        if (route.params?.history) {
-            setHistoryData(route.params.history);
-        }
-    }, [route.params?.history]);
-
-    const storeHistoryData = async (history) => {
-        try {
-            const jsonValue = JSON.stringify(history);
-            await AsyncStorage.setItem('@history', jsonValue);
-        } catch (e) {
-            console.error('Error saving history data', e);
-        }
-    };
-    const loadHistoryData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@history');
-            if (jsonValue != null) {
-                setHistoryData(JSON.parse(jsonValue));
-            }
-        } catch (e) {
-            console.error('Error loading history data', e);
-        }
-    };
-
-    useEffect(() => {
-        if (historyData.length > 0) {
-            storeHistoryData(historyData)
-                .then(() => console.log('History data saved successfully.'))
-                .catch(e => console.error('Error saving history data', e));
-        }
-    }, [historyData]);
-
-    useEffect(() => {
-        console.log('actual history data : ' + historyData);
-        loadHistoryData()
-            .then(() => console.log('History data loaded successfully.'))
-            .catch(e => console.error('Error loading  history data', e));
-    }, []);
+    const {historyData} = useHistoryData();
 
     return (
         <View style={styles.container}>

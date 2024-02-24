@@ -4,59 +4,61 @@ import { Ionicons,FontAwesome } from '@expo/vector-icons';
 import {LinearGradient} from "expo-linear-gradient";
 import DataMatrixScanner from "../../Components/DataMatrixScanner";
 import productList from "../../data/data.json";
-
+import useHistoryData from "../../hook/useHistoryData";
 const HomeScreen = ({ navigation }) => {
     const [cipCode, setCipCode] = useState('');
     const [productName, setProductName] = useState('');
     const [history, setHistory] = useState([]);
     const [ValidProduct, setValidProduct] = useState(false);
+    const { historyData, saveHistoryData } = useHistoryData();
 
-    const handleSubmit = () => {
-        if (ValidProduct) {
-            const newEntry = {
-                date: new Date().toLocaleDateString(),
-                cipCode: cipCode,
-                name: productName,
-            };
-            setHistory(prevHistory => [newEntry,...prevHistory]);
-            setProductName('');
-            setCipCode('');
-            navigation.navigate('ConfirmationPage');
-        }
-        else {
-            Alert.alert('Incorrect code CIP');
-        }
-    };
     const handleNavigateToSettings = () => {
         navigation.navigate('Settings');
     };
     const navigateHistory = () => {
         navigation.navigate('History',{ history: history });
     }
+
+    const handleSubmit = async () => {
+        if (!ValidProduct) {
+            Alert.alert('Invalid Product', 'The product code entered is not valid.');
+            return;
+        }
+
+        const newEntry = {
+            date: new Date().toLocaleDateString(),
+            cipCode: cipCode,
+            name: productName,
+        };
+        await saveHistoryData([newEntry, ...historyData]);
+        setCipCode('');
+        setProductName('');
+        navigation.navigate('ConfirmationPage');
+    };
     const handleCipCode = (data) => {
         const product = productList.find(p => String(p.CIP) === String(data));
-        if (product) {
-            setCipCode(data);
-            setProductName(product.Name);
-            setValidProduct(true);
-            console.log('actual cip code : ' + cipCode);
-            console.log('actual product code : ' + productName);
-        } else {
+        if (!product) {
             setValidProduct(false);
+            Alert.alert('Invalid CIP', 'The CIP code entered is not valid.');
+            return;
         }
+        setCipCode(data);
+        setProductName(product.Name);
+        setValidProduct(true);
     };
 
     const onHandleSubmitPress = () => {
         handleCipCode(cipCode);
         if (ValidProduct) {
-            handleSubmit();
+            handleSubmit()
+                .then(()=> {
+                    console.log('product has been reported')})
+                .catch(()=>{
+                    console.log('Error during submitting report')});
         } else {
             Alert.alert('Invalid CIP', 'The CIP code entered is not valid.');
         }
     };
-    useEffect(() => {
-        handleCipCode(cipCode);
-    }, [cipCode]);
 
     return (
         <View style={styles.container}>
