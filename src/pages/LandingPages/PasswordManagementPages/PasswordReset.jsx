@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from "react-native";
-import Header from "../components/Header"
+import Header from '../../../../Components/Header';
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity} from "react-native";
-import Header from '../components/Header';
+import Header from '../../../../Components/Header';
+import {LinearGradient} from "expo-linear-gradient";
 
 const ForgotPassword = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -9,6 +10,10 @@ const ForgotPassword = ({navigation}) => {
     }
     return (
         <View style={styles.container}>
+            <LinearGradient
+                colors={['#B7FFB1', '#FFE500']}
+                style={styles.background}
+            />
             <Header title={"Forgot password"} navigation={navigation}></Header>
             <View>
                 <Text style={styles.text}>
@@ -22,7 +27,7 @@ const ForgotPassword = ({navigation}) => {
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
-                    placeholderTextColor="#ccc"
+                    placeholderTextColor="#000"
                     keyboardType="email-address"
                     onChangeText={(text) => setEmail(text)}
                 />
@@ -45,14 +50,17 @@ const styles = StyleSheet.create({
         paddingTop: 50,
         paddingHorizontal: 20,
     },
+    background : {
+        ...StyleSheet.absoluteFillObject,
+    },
     text : {
-        color: '#fff',
+        color: '#000',
         fontWeight: 'bold',
         fontSize: 24,
         //marginBottom: 30,
     },
     input: {
-        backgroundColor: '#30363D', //else #222
+        backgroundColor: 'transparent', //else #222
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
@@ -64,7 +72,9 @@ const styles = StyleSheet.create({
     },
     ContinueButton: {
         alignSelf: 'stretch',
-        backgroundColor: '#EBFE69',
+        backgroundColor: 'transparent',
+        borderColor: 'black',
+        borderWidth: 2,
         padding: 15,
         paddingVertical: 19,
         borderRadius: 16,
@@ -72,7 +82,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     buttonText: {
-        color: '#554F59',
+        color: '#000',
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 16,
