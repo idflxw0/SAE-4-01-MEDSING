@@ -19,7 +19,7 @@ const CustomInput = ({inputType}) => {
                 <TextInput
                     style={styles.input}
                     placeholder={inputType}
-                    placeholderTextColor="#ccc"
+                    placeholderTextColor="#000"
                     keyboardType={inputType === 'Email' ? 'email-address' : 'default'}
                     secureTextEntry={inputType === 'Password' && !isPasswordVisible}
                 />
@@ -29,7 +29,7 @@ const CustomInput = ({inputType}) => {
                     <TextInput
                         style={[styles.input, styles.passwordInput]}
                         placeholder={inputType}
-                        placeholderTextColor="#ccc"
+                        placeholderTextColor="#000"
                         onChangeText={handleInputChange}
                         secureTextEntry={!isPasswordVisible}
                     />
@@ -38,7 +38,7 @@ const CustomInput = ({inputType}) => {
                             <Icon
                                 name={isPasswordVisible ? 'eye-outline' : 'eye-off-outline'}
                                 size={24}
-                                color="white"
+                                color="black"
                             />
                         </TouchableOpacity>
                     )}
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     input: {
-        backgroundColor: '#30363D', //else #222
+        backgroundColor: 'transparent', //else #222
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
-        color: '#fff',
+        color: '#000',
         paddingHorizontal: 15,
         paddingVertical: 15,
         marginTop : 12,
