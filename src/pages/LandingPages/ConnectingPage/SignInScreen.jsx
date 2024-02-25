@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons from expo/vector-icons
-import Header from '../components/Header';
+import Header from '../../../../Components/Header';
 import CustomButton from "../components/CustomButton";
+import {LinearGradient} from "expo-linear-gradient";
 
 const SignInScreen = ({ navigation }) => {
     const MINIMAL_PASSWORD_LENGTH = 8;
@@ -93,11 +94,15 @@ const SignInScreen = ({ navigation }) => {
     };
     return (
         <View style={styles.container}>
+            <LinearGradient
+                colors={['#B7FFB1', '#FFE500']}
+                style={styles.background}
+            />
             <Header title={"Log in"} navigation={navigation}></Header>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                placeholderTextColor="#ccc"
+                placeholderTextColor="#000"
                 keyboardType="email-address"
                 onChangeText={(text) => setEmail(text)}
             />
@@ -108,7 +113,7 @@ const SignInScreen = ({ navigation }) => {
                 <TextInput
                     style={styles.passwordInput}
                     placeholder="Password"
-                    placeholderTextColor="#ccc"
+                    placeholderTextColor="#000"
                     secureTextEntry={!showPassword} // Show or hide password based on showPassword state
                     onChangeText={(text) => setPassword(text)}
                 />
@@ -116,7 +121,7 @@ const SignInScreen = ({ navigation }) => {
                     style={styles.eyeIcon}
                     onPress={togglePasswordVisibility}
                 >
-                    <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="#ccc" />
+                    <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="#000" />
                 </TouchableOpacity>
             </View>
             <Text style={getCheckerStyle(password, 'password')}>
@@ -163,8 +168,11 @@ const styles = StyleSheet.create({
         paddingTop: 50,
         paddingHorizontal: 20,
     },
+    background : {
+        ...StyleSheet.absoluteFillObject,
+    },
     input: {
-        backgroundColor: '#222', // Input field color grading
+        backgroundColor: 'transparent', // Input field color grading
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
@@ -178,8 +186,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         marginTop: 20,
-        color: '#EBFE69', // Forgot password text color grading
+        color: '#000', // Forgot password text color grading
         alignSelf: 'center',
+        textDecorationLine: 'underline',
         marginBottom: 20,
     },
     signUpContainer: {
@@ -189,18 +198,18 @@ const styles = StyleSheet.create({
     },
     signUpText: {
         fontSize: 16,
-        color: '#90909F', // Sign up text color grading
+        color: '#000', // Sign up text color grading
     },
     signInButton: {
         fontSize: 16,
         fontWeight: 'bold',
         textDecorationLine: 'underline',
-        color: '#EBFE69', // Sign up button text color grading
+        color: '#000', // Sign up button text color grading
     },
     orText: {
         fontWeight: 'bold',
         marginTop: 5,
-        color: '#90909F', // Or text color grading
+        color: '#000', // Or text color grading
         alignSelf: 'center',
         marginBottom: 15,
     },
@@ -208,7 +217,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#30363D', // Corporate button color grading
+        backgroundColor: 'transparent', // Corporate button color grading
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
@@ -224,7 +233,7 @@ const styles = StyleSheet.create({
     },
     buttonCorporateText: {
         flex: 1,
-        color: '#FFF',
+        color: '#000',
         fontSize: 16,
         marginRight: 40,
         textAlign: "center"
@@ -236,7 +245,7 @@ const styles = StyleSheet.create({
     },
     passwordInput: {
         flex: 1,
-        backgroundColor: '#222', // Input field color grading
+        backgroundColor: 'transparent', // Input field color grading
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,

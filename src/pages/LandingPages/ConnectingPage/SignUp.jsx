@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
-import Header from '../components/Header';
+import Header from '../../../../Components/Header';
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
+import {LinearGradient} from "expo-linear-gradient";
 const SignUpScreen = ({ navigation }) => {
     const [isChecked, setIsChecked] = useState(false);
     const toggleCheckbox = () => {
@@ -19,13 +20,17 @@ const SignUpScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <LinearGradient
+                colors={['#B7FFB1', '#FFE500']}
+                style={styles.background}
+            />
             <Header title={"Sign up"} navigation={navigation}></Header>
             <CustomInput inputType={"Name"}></CustomInput>
             <CustomInput inputType={"Email"}></CustomInput>
             <CustomInput inputType={"Password"}></CustomInput>
             <View style={styles.termsContainer}>
                 <TouchableOpacity style={styles.checkbox} onPress={toggleCheckbox}>
-                    {isChecked && <FontAwesome name="check" size={18} color="white" style={styles.checkIcon}/>}
+                    {isChecked && <FontAwesome name="check" size={18} color="black" style={styles.checkIcon}/>}
                 </TouchableOpacity>
                 <Text style={styles.termsText}>
                     By signing up, you agree to the{' '}
@@ -67,13 +72,17 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         justifyContent: 'flex-start',
-        backgroundColor: '#30363D',
+        backgroundColor: 'transparent',
         paddingTop: 50,
         paddingHorizontal: 20,
     },
     linkText: {
-        color: '#EBFE69',
-        // textDecorationLine: 'underline',
+        color: '#000',
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+    },
+    background : {
+        ...StyleSheet.absoluteFillObject,
     },
     termsContainer: {
         flexDirection: 'row',
@@ -83,8 +92,8 @@ const styles = StyleSheet.create({
     checkbox: {
         width: 24,
         height: 24,
-        backgroundColor: '#30363D',
-        borderColor: '#EBFE69',
+        backgroundColor: 'transparent',
+        borderColor: '#000',
         borderWidth: 1,
         borderRadius: 3,
         marginRight: 10,
@@ -97,7 +106,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#30363D',
+        backgroundColor: 'transparent',
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
@@ -117,7 +126,7 @@ const styles = StyleSheet.create({
         height: 30,
     },
     buttonText: {
-        color: '#554F59',
+        color: '#fff',
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 16,
@@ -125,7 +134,7 @@ const styles = StyleSheet.create({
     },
     buttonCorporateText : {
         flex: 1,
-        color: '#FFF',
+        color: '#000',
         fontSize: 16,
         marginRight : 40,
         textAlign : "center"
@@ -133,7 +142,7 @@ const styles = StyleSheet.create({
     orText: {
         fontWeight: 'bold',
         marginTop: 5,
-        color: '#90909F',
+        color: '#000',
         alignSelf: 'center',
         marginBottom: 15,
     },
@@ -143,15 +152,15 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     loginText: {
-        color: '#90909F',
+        color: '#000',
     },
     loginButton: {
         fontWeight: 'bold',
         textDecorationLine: 'underline',
-        color: '#EBFE69',
+        color: '#000',
     },
     termsText: {
-        color: '#fff',
+        color: '#000',
         fontSize: 14,
         flexShrink: 1,
     },
