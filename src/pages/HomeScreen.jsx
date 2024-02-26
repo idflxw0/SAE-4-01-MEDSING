@@ -99,8 +99,8 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.ScannerContainer}>
                 <DataMatrixScanner onCipCodeScanned={handleCipCode}/>
             </View>
-            <Image source={require('../../assets/pill right.png')} style={styles.logo1} />
-            <Image source={require('../../assets/pill left.png')} style={styles.logo2} />
+            <Image source={require('../../assets/pill right 2.png')} style={styles.logo2} />
+            <Image source={require('../../assets/pill left 2.png')} style={styles.logo1} />
         </View>
     );
 };
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     },
     logo2: {
         position: 'absolute',
-        bottom: 0,
+        bottom: -30,
         left: -100,
         width: '100%',
         height: 150,
