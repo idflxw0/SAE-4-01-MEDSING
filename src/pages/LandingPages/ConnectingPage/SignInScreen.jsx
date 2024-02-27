@@ -5,6 +5,7 @@ import Header from '../../../../Components/Header';
 import CustomButton from "../components/CustomButton";
 import {LinearGradient} from "expo-linear-gradient";
 import { auth,loginUser } from '../../../config/firebase';
+import {storeUserSession} from "../../../../hook/authSession";
 const SignInScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,11 +18,13 @@ const SignInScreen = ({ navigation }) => {
     const handleSignIn = () => {
         loginUser(auth, email, password)
             .then((userCredential) => {
-                // The user has been signed in
                 const user = userCredential.user;
-                console.log('User signed in:', user);
-
-                // Navigate to the "Home" screen
+                storeUserSession({
+                    uid: user.uid,
+                    email: user.email,
+                }).then(()=>{
+                    console.log('User signed up:', user);
+                });
                 navigation.navigate('HomeScreen');
             })
             .catch((error) => {

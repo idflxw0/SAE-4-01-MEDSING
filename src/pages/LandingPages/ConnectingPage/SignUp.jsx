@@ -5,9 +5,10 @@ import Header from '../../../../Components/Header';
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import {LinearGradient} from "expo-linear-gradient";
-
 import { auth,createUser } from '../../../config/firebase';
 
+import {storeUserSession} from "../../../../hook/authSession";
+import {log} from "expo/build/devtools/logger";
 
 const SignUpScreen = ({ navigation }) => {
     const [isChecked, setIsChecked] = useState(false);
@@ -91,10 +92,13 @@ const SignUpScreen = ({ navigation }) => {
     const handleSignUp = () => {
         createUser(auth, email, password)
             .then((userCredential) => {
-                // The user has been signed up
                 const user = userCredential.user;
-                console.log('User signed up:', user);
-
+                storeUserSession({
+                    uid: user.uid,
+                    email: user.email,
+                }).then(()=>{
+                    console.log('User signed up:', user);
+                });
                 // Navigate to the "Home" screen
                 navigation.navigate('HomeScreen');
             })

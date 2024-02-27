@@ -2,13 +2,19 @@
 import React, { useEffect } from 'react';
 import {Text, Image, StyleSheet, View} from 'react-native';
 import {LinearGradient} from "expo-linear-gradient";
+import {checkUserSession} from "../../hook/authSession";
 
 const SplashScreen = ({ navigation }) => {
     useEffect(() => {
-        // Simulate a delay, for example, 2000ms (2 seconds)
-        const splashTimeout = setTimeout(() => {
-            // Navigate to the next screen (replace 'HomeScreen' with your desired screen name)
-            navigation.replace('Landing');
+        const splashTimeout = setTimeout(async () => {
+            const isLoggedIn = await checkUserSession();
+            if (isLoggedIn) {
+                console.log("User is logged in, navigating to main screen");
+                navigation.replace('HomeScreen');
+            } else {
+                console.log("No user session, navigating to login screen");
+                navigation.replace('Landing');
+            }
         }, 2000);
 
         // Clear the timeout when the component unmounts
