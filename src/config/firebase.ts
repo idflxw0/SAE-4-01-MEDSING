@@ -1,19 +1,23 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp,getApps, FirebaseApp} from 'firebase/app';
 import 'firebase/firestore';
-import { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword, signOut} from 'firebase/auth';
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import constants from 'expo-constants';
 
 const configuration = {
-    apiKey: "AIzaSyCLFfV-0SqBQIwKcbZdL7r14YB_Ul4k6Xs",
-    authDomain: "medsing-a70de.firebaseapp.com",
-    projectId: "medsing-a70de",
-    storageBucket: "medsing-a70de.appspot.com",
-    messagingSenderId: "75389818076",
-    appId: "1:75389818076:web:4a2dddff088995a94ed019",
-    measurementId: "G-TB7K703250"
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTH_DOMAIN,
+    projectId: process.env.PROJECT_ID,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDER_ID,
+    appId: process.env.APP_ID,
+    measurementId: process.env.MEASUREMENT_ID
 }
-
-export const firebaseApp = initializeApp(configuration);
+let firebaseApp: FirebaseApp;
+if (!getApps().length) {
+    firebaseApp = initializeApp(configuration);
+} else {
+    firebaseApp = getApps()[0];
+}
 export const auth = getAuth(firebaseApp);
 
 // Export auth functions
