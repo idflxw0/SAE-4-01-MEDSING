@@ -1,9 +1,69 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Animated, Easing} from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
 import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient from expo-linear-gradient
 
 const SettingsScreen = ({ navigation }) => {
+    const logo1TranslateY = new Animated.Value(-500);
+    const logo2TranslateY = new Animated.Value(-500);
+    const logo1TranslateX = new Animated.Value(100);
+    const logo2TranslateX = new Animated.Value(-100);
+    const logo1Rotate = new Animated.Value(0);
+    const logo2Rotate = new Animated.Value(0);
+
+    const startAnimation = () => {
+        Animated.parallel([
+
+            Animated.sequence([
+                Animated.timing(logo1TranslateY, {
+                    toValue: 0,
+                    duration: 600,
+                    easing: Easing.out(Easing.exp),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(logo1TranslateX, {
+                    toValue: 0,
+                    duration: 600,
+                    easing: Easing.out(Easing.exp),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(logo1Rotate, {
+                    toValue: 1,
+                    duration: 800,
+                    easing: Easing.out(Easing.exp),
+                    useNativeDriver: true,
+                }),
+
+            ]),
+
+
+            Animated.sequence([
+                Animated.timing(logo2TranslateY, {
+                    toValue: 0,
+                    duration: 600,
+                    easing: Easing.out(Easing.exp),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(logo2TranslateX, {
+                    toValue: 0,
+                    duration: 600,
+                    easing: Easing.out(Easing.exp),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(logo2Rotate, {
+                    toValue: 1,
+                    duration: 1200,
+                    easing: Easing.out(Easing.exp),
+                    useNativeDriver: true,
+                }),
+
+            ]),
+        ]).start();
+    };
+
+    useEffect(() => {
+        startAnimation();
+    }, []);
     const handleNavigateToHome = () => {
         navigation.navigate('HomeScreen');
     };
@@ -44,6 +104,35 @@ const SettingsScreen = ({ navigation }) => {
                 <Text style={styles.optionText}>Help</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
             </TouchableOpacity>
+
+            <Animated.Image
+                source={require('../../assets/pill right 2.png')}
+                style={{
+                    ...styles.logo1,
+                    transform: [
+                        { translateY: logo1TranslateY },
+                        { translateX: logo1TranslateX },
+                        { rotate: logo1Rotate.interpolate({
+                                inputRange: [0, 2],
+                                outputRange: ['0deg', '360deg']
+                            }) }
+                    ]
+                }}
+            />
+            <Animated.Image
+                source={require('../../assets/pill left 2.png')}
+                style={{
+                    ...styles.logo2,
+                    transform: [
+                        { translateY: logo2TranslateY },
+                        { translateX: logo2TranslateX },
+                        { rotate: logo2Rotate.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: ['0deg', '360deg']
+                            }) }
+                    ]
+                }}
+            />
         </View>
     );
 };
@@ -92,6 +181,22 @@ const styles = StyleSheet.create({
     },
     optionText: {
         flex: 1,
+    },
+    logo1: {
+        position: 'absolute',
+        bottom: -30,
+        left: 120,
+        width: '100%',
+        height: 150,
+        resizeMode: 'contain',
+    },
+    logo2: {
+        position: 'absolute',
+        bottom: -30,
+        right:120,
+        width: '100%',
+        height: 200,
+        resizeMode: 'contain',
     },
 });
 
