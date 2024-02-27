@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Animated, Easing} from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
 import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient from expo-linear-gradient
+import { auth,signOutUser } from '../config/firebase';
 
 const SettingsScreen = ({ navigation }) => {
     const logo1TranslateY = new Animated.Value(-500);
@@ -10,6 +11,23 @@ const SettingsScreen = ({ navigation }) => {
     const logo2TranslateX = new Animated.Value(-100);
     const logo1Rotate = new Animated.Value(0);
     const logo2Rotate = new Animated.Value(0);
+
+
+    const handleSignOut = () => {
+        signOutUser(auth)
+            .then(() => {
+                // The user has been signed out
+                console.log('User signed out');
+
+                // Navigate to the "Login" screen
+                navigation.navigate('LoginScreen');
+            })
+            .catch((error) => {
+                // There was an error signing out the user
+                console.error('Error signing out:', error);
+            });
+    };
+
 
     const startAnimation = () => {
         Animated.parallel([
@@ -104,7 +122,10 @@ const SettingsScreen = ({ navigation }) => {
                 <Text style={styles.optionText}>Help</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
             </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => handleNavigateToScreen('Landing')} style={styles.option}>
+                <Text style={styles.optionText}>Log out</Text>
+                <Ionicons name="chevron-forward" size={16} color="black" />
+            </TouchableOpacity>
             <Animated.Image
                 source={require('../../assets/pill right 2.png')}
                 style={{
