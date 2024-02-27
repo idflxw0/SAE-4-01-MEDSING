@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet, Animated, Easing} from 'react-
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vector-icons
 import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient from expo-linear-gradient
 import { auth,signOutUser } from '../config/firebase';
-
+import {clearUserSession} from "../../hook/authSession";
 const SettingsScreen = ({ navigation }) => {
     const logo1TranslateY = new Animated.Value(-500);
     const logo2TranslateY = new Animated.Value(-500);
@@ -13,25 +13,20 @@ const SettingsScreen = ({ navigation }) => {
     const logo2Rotate = new Animated.Value(0);
 
 
-    const handleSignOut = () => {
-        signOutUser(auth)
-            .then(() => {
-                // The user has been signed out
-                console.log('User signed out');
-
-                // Navigate to the "Login" screen
-                navigation.navigate('LoginScreen');
-            })
-            .catch((error) => {
-                // There was an error signing out the user
-                console.error('Error signing out:', error);
-            });
+    const handleSignOut = async () => {
+        try {
+            await clearUserSession();
+            await signOutUser(auth);
+            console.log('User signed out');
+            navigation.navigate('Landing');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
     };
 
 
     const startAnimation = () => {
         Animated.parallel([
-
             Animated.sequence([
                 Animated.timing(logo1TranslateY, {
                     toValue: 0,
@@ -53,7 +48,6 @@ const SettingsScreen = ({ navigation }) => {
                 }),
 
             ]),
-
 
             Animated.sequence([
                 Animated.timing(logo2TranslateY, {
@@ -122,7 +116,7 @@ const SettingsScreen = ({ navigation }) => {
                 <Text style={styles.optionText}>Help</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigateToScreen('Landing')} style={styles.option}>
+            <TouchableOpacity onPress={() => handleSignOut()} style={styles.option}>
                 <Text style={styles.optionText}>Log out</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
             </TouchableOpacity>
