@@ -22,37 +22,10 @@ import PasswordReset from "./src/pages/LandingPages/PasswordManagementPages/Pass
 import ForgotPassword from "./src/pages/LandingPages/PasswordManagementPages/ForgotPassword";
 import OnboardingScreen from "./src/pages/LandingPages/LandingPage";
 
-import { auth } from './src/config/firebase';
-
-
 const Stack = createStackNavigator();
 export default function App() {
     const [initialRoute, setInitialRoute] = useState('SignIn');
 
-    const checkUserLoggedIn = () => {
-        return new Promise((resolve, reject) => {
-            auth.onAuthStateChanged(function(user) {
-                if (user) {
-                    // User is signed in.
-                    resolve(true);
-                } else {
-                    // No user is signed in.
-                    resolve(false);
-                }
-            });
-        });
-    };
-
-    useEffect(() => {
-        // Replace this with your actual logic to check if the user is logged in
-        const userIsLoggedIn = checkUserLoggedIn();
-
-        if (userIsLoggedIn) {
-            setInitialRoute('HomeScreen');
-        } else {
-            setInitialRoute('SignIn');
-        }
-    }, []);
   return (
       <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen" options={{ headerShown: false }}>
