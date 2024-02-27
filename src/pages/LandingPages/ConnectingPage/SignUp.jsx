@@ -5,17 +5,103 @@ import Header from '../../../../Components/Header';
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import {LinearGradient} from "expo-linear-gradient";
+
+import { auth,createUser } from '../../../../src/config/firebase';
+
+
 const SignUpScreen = ({ navigation }) => {
     const [isChecked, setIsChecked] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const MINIMAL_PASSWORD_LENGTH = 6;
+
     const toggleCheckbox = () => {
         setIsChecked((prev) => !prev);
     };
-    const handleSignUp = () => {
-        // Implement your sign-in logic here
-        console.log('Signing Up...');
 
-        // Assuming the name of the "Home" screen is 'Home', navigate to it after successful login
-        navigation.navigate('HomeScreen');
+    const checkMail = (email) => {
+        const emailRegex = /^\S+@\S+\.\S+$/;
+        return emailRegex.test(email);
+    };
+
+
+    function getMailChecker(isValid) {
+        return isValid ? "Email is valid" : "Email isn't valid";
+    }
+
+    function checkPassword(password) {
+        if (password.length < MINIMAL_PASSWORD_LENGTH) {
+            return 'Your password must contain at least 8 characters.';
+        }
+        if (!/[A-Z]/.test(password)) {
+            return 'Your password must contain at least one capital letter.';
+        }
+        if (!/[a-z]/.test(password)) {
+            return 'Your password must contain at least one lower case letter.';
+        }
+        if (!/\d/.test(password)) {
+            return 'Your password must contain at least one number.';
+        }
+        if (!/[^A-Za-z0-9]/.test(password)) {
+            return 'Your password must contain at least one special character.';
+        }
+        return 'Your password is secured';
+    }
+
+    const getPasswordChecker = (passwordCheckResult) => {
+        switch (passwordCheckResult) {
+            case 'Your password must contain at least 8 characters.':
+                return 'Password is too short.';
+            case 'Your password must contain at least one capital letter.':
+                return 'Password needs at least one capital letter.';
+            case 'Your password must contain at least one lower case letter.':
+                return 'Password needs at least one lowercase letter.';
+            case 'Your password must contain at least one number.':
+                return 'Password needs at least one number.';
+            case 'Your password must contain at least one special character.':
+                return 'Password needs at least one special character.';
+            case 'Your password is secured':
+                return 'Password is secure. Good job!';
+            default:
+                return 'Invalid password';
+        }
+    };
+
+    function getCheckerStyle(toCheck, dataType) {
+        if (toCheck === '') {
+            return {display: 'none',};
+        }
+        if (dataType === 'password') {
+            return {
+                color: checkPassword(toCheck) === 'Your password is secured' ? 'green' : 'red',
+                fontSize: 16,
+                fontWeight: 'bold',
+            };
+        } else if (dataType === 'email') {
+            return {
+                color: checkMail(toCheck) ? 'green' : 'red',
+                fontSize: 16,
+                fontWeight: 'bold',
+            };
+        }
+    }
+
+
+    const handleSignUp = () => {
+        createUser(auth, email, password)
+            .then((userCredential) => {
+                // The user has been signed up
+                const user = userCredential.user;
+                console.log('User signed up:', user);
+
+                // Navigate to the "Home" screen
+                navigation.navigate('HomeScreen');
+            })
+            .catch((error) => {
+                // There was an error signing up the user
+                console.error('Error signing up:', error);
+            });
     };
 
     return (
@@ -25,9 +111,16 @@ const SignUpScreen = ({ navigation }) => {
                 style={styles.background}
             />
             <Header title={"Sign up"} navigation={navigation}></Header>
-            <CustomInput inputType={"Name"}></CustomInput>
-            <CustomInput inputType={"Email"}></CustomInput>
-            <CustomInput inputType={"Password"}></CustomInput>
+
+            <CustomInput inputType={"Name"} value={name} setValue={setName} />
+            <CustomInput inputType={"Email"} value={email} setValue={setEmail}/>
+            <Text style={getCheckerStyle(email, 'email')}>
+                {getMailChecker(checkMail(email))}
+            </Text>
+            <CustomInput inputType={"Password"} value={password} setValue={setPassword} />
+            <Text style={getCheckerStyle(password, 'password')}>
+                {getPasswordChecker(checkPassword(password))}
+            </Text>
             <View style={styles.termsContainer}>
                 <TouchableOpacity style={styles.checkbox} onPress={toggleCheckbox}>
                     {isChecked && <FontAwesome name="check" size={18} color="black" style={styles.checkIcon}/>}
