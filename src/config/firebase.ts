@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import 'firebase/firestore';
-import { getAuth,createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import constants from 'expo-constants';
 
 const configuration = {
@@ -16,5 +16,6 @@ const configuration = {
 export const firebaseApp = initializeApp(configuration);
 export const auth = getAuth(firebaseApp);
 export const createUser = createUserWithEmailAndPassword;
+export const loginUser = signInWithEmailAndPassword;
 export const signOutUser = signOut;
 

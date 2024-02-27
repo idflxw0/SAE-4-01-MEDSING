@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const CustomInput = ({inputType}) => {
+const CustomInput = ({inputType,value, setValue}) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [showEyeIcon, setShowEyeIcon] = useState(false);
     const [password, setPassword] = useState('');
@@ -22,6 +22,8 @@ const CustomInput = ({inputType}) => {
                     placeholderTextColor="#000"
                     keyboardType={inputType === 'Email' ? 'email-address' : 'default'}
                     secureTextEntry={inputType === 'Password' && !isPasswordVisible}
+                    value={value}
+                    onChangeText={setValue}
                 />
             )}
             {inputType.toLowerCase().includes('password') && (
@@ -30,8 +32,9 @@ const CustomInput = ({inputType}) => {
                         style={[styles.input, styles.passwordInput]}
                         placeholder={inputType}
                         placeholderTextColor="#000"
-                        onChangeText={handleInputChange}
+                        onChangeText={setValue}
                         secureTextEntry={!isPasswordVisible}
+                        value={value}
                     />
                     {showEyeIcon && (
                         <TouchableOpacity style={styles.eyeIcon} onPress={handlePasswordVisibility}>

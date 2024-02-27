@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons from
 import Header from '../../../../Components/Header';
 import CustomButton from "../components/CustomButton";
 import {LinearGradient} from "expo-linear-gradient";
-
+import { auth,loginUser } from '../../../config/firebase';
 const SignInScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,21 +15,24 @@ const SignInScreen = ({ navigation }) => {
     }
 
     const handleSignIn = () => {
-        // Implement your sign-in logic here
-        console.log('Signing in...');
+        loginUser(auth, email, password)
+            .then((userCredential) => {
+                // The user has been signed in
+                const user = userCredential.user;
+                console.log('User signed in:', user);
 
-        // Assuming the name of the "Home" screen is 'Home', navigate to it after successful login
-        navigation.navigate('HomeScreen');
+                // Navigate to the "Home" screen
+                navigation.navigate('HomeScreen');
+            })
+            .catch((error) => {
+                // There was an error signing in the user
+                console.error('Error signing in:', error);
+            });
     };
-
-
 
     function togglePasswordVisibility() {
         setShowPassword(!showPassword);
     }
-
-
-
 
     /*A coder!!!*/
 
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
-        color: '#fff',
+        color: '#000',
         paddingHorizontal: 15,
         paddingVertical: 15,
         marginTop: 15,
@@ -186,7 +189,7 @@ const styles = StyleSheet.create({
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
-        color: '#fff',
+        color: '#000',
         paddingHorizontal: 15,
         paddingVertical: 15,
         marginTop: 15,

@@ -6,7 +6,7 @@ import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import {LinearGradient} from "expo-linear-gradient";
 
-import { auth,createUser } from '../../../../src/config/firebase';
+import { auth,createUser } from '../../../config/firebase';
 
 
 const SignUpScreen = ({ navigation }) => {
@@ -100,6 +100,7 @@ const SignUpScreen = ({ navigation }) => {
             })
             .catch((error) => {
                 // There was an error signing up the user
+                console.log(email);
                 console.error('Error signing up:', error);
             });
     };
