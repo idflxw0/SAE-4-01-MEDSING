@@ -4,10 +4,32 @@ import {LinearGradient} from "expo-linear-gradient";
 import Header from "../../Components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useHistoryData from "../../hook/useHistoryData";
-
+import {auth, db} from "../config/firebase";
+import { doc, getDoc } from "firebase/firestore";
 const History = ({ navigation,route }) => {
-    const {historyData} = useHistoryData();
+    const [historyData, setHistoryData] = useState([]);
+    useEffect(() => {
+        const fetchHistoryData = async () => {
+            const user = auth.currentUser;
+            console.log(user);
 
+            if (user) {
+                const userDocRef = doc(db, "userData", user.uid);
+                const docSnap = await getDoc(userDocRef);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    // Assuming history is stored under a 'history' key
+                    if (userData.history) {
+                        setHistoryData(userData.history);
+                    }
+                } else {
+                    console.log("No such document!");
+                }
+            }
+        };
+        fetchHistoryData();
+    }, []);
     return (
         <View style={styles.container}>
             <LinearGradient
