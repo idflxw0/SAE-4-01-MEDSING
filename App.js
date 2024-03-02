@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import SplashScreen from "./src/pages/SplashScreen";
 import HomeScreen from "./src/pages/HomeScreen";
 
@@ -21,10 +22,37 @@ import ResetConfirmation from "./src/pages/LandingPages/PasswordManagementPages/
 import PasswordReset from "./src/pages/LandingPages/PasswordManagementPages/PasswordReset";
 import ForgotPassword from "./src/pages/LandingPages/PasswordManagementPages/ForgotPassword";
 import OnboardingScreen from "./src/pages/LandingPages/LandingPage";
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './src/config/firebase';
 
 const Stack = createStackNavigator();
 export default function App() {
-    const [initialRoute, setInitialRoute] = useState('SignIn');
+    /*useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, user => {
+            console.log(auth)
+            if (user) {
+                console.log('User is signed in:', user);
+            } else {
+                console.log('No user is signed in');
+            }
+        });
+
+        return () => unsubscribe(); // Cleanup the listener on unmount
+    }, []);*/
+    const [initializing, setInitializing] = React.useState(true);
+    const [user, setUser] = React.useState(null);
+
+    function onAuthStateChanged(user) {
+        setUser(user);
+        if (initializing) setInitializing(false);
+    }
+
+    useEffect(() => {
+        const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+        return subscriber;
+    }, []);
+
+    if (initializing) return null;
 
   return (
       <NavigationContainer>

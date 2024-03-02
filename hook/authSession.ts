@@ -37,6 +37,6 @@ async function handleAppStartup({navigation}) {
         navigation.navigate('HomeScreen');
     } else {
         console.log("No user session, navigating to login screen");
-        navigation.navigate('SignIn');
+        navigation.navigate('Landing');
     }
 }
