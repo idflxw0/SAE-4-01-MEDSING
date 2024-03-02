@@ -24,7 +24,6 @@ import ForgotPassword from "./src/pages/LandingPages/PasswordManagementPages/For
 import OnboardingScreen from "./src/pages/LandingPages/LandingPage";
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './src/config/firebase';
-
 const Stack = createStackNavigator();
 export default function App() {
     /*useEffect(() => {
@@ -51,10 +50,8 @@ export default function App() {
         const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
         return subscriber;
     }, []);
-
     if (initializing) return null;
-
-  return (
+    return (
       <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen" options={{ headerShown: false }}>
 
@@ -80,7 +77,7 @@ export default function App() {
       </NavigationContainer>
 
 
-  );
+    );
 }
 
 const styles = StyleSheet.create({
