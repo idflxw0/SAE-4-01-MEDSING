@@ -16,28 +16,24 @@ const SignInScreen = ({ navigation }) => {
     }
 
     const handleSignIn = () => {
-        loginUser(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                storeUserSession({
-                    uid: user.uid,
-                    email: user.email,
-                }).then(()=>{
-                    console.log('User signed up:', user);
+    loginUser(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            storeUserSession(user) // Store the entire user object
+                .then(()=>{
+                    console.log('User signed up:', user.uid);
                 });
-                navigation.navigate('HomeScreen');
-            })
-            .catch((error) => {
-                // There was an error signing in the user
-                console.error('Error signing in:', error);
-            });
-    };
+            navigation.navigate('HomeScreen');
+        })
+        .catch((error) => {
+            // There was an error signing in the user
+            console.error('Error signing in:', error);
+        });
+};
 
     function togglePasswordVisibility() {
         setShowPassword(!showPassword);
     }
-
-    /*A coder!!!*/
 
     return (
         <View style={styles.container}>

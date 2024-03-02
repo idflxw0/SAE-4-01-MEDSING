@@ -3,24 +3,22 @@ import React, { useEffect } from 'react';
 import {Text, Image, StyleSheet, View} from 'react-native';
 import {LinearGradient} from "expo-linear-gradient";
 import {checkUserSession} from "../../hook/authSession";
-
+import { auth } from "../config/firebase";
 const SplashScreen = ({ navigation }) => {
     useEffect(() => {
-        const splashTimeout = setTimeout(async () => {
-            const isLoggedIn = await checkUserSession();
-            if (isLoggedIn) {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
                 console.log("User is logged in, navigating to main screen");
                 navigation.replace('HomeScreen');
             } else {
                 console.log("No user session, navigating to login screen");
                 navigation.replace('Landing');
             }
-        }, 2000);
+        });
 
-        // Clear the timeout when the component unmounts
-        return () => clearTimeout(splashTimeout);
+        // Unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
     }, [navigation]);
-
     return (
         <View style={styles.container}>
             <LinearGradient
