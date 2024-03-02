@@ -11,17 +11,15 @@ const History = ({ navigation,route }) => {
     useEffect(() => {
         const fetchHistoryData = async () => {
             const user = auth.currentUser;
-            console.log(user);
-
             if (user) {
                 const userDocRef = doc(db, "userData", user.uid);
                 const docSnap = await getDoc(userDocRef);
 
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
-                    // Assuming history is stored under a 'history' key
                     if (userData.history) {
-                        setHistoryData(userData.history);
+                        const reversedHistory = [...userData.history].reverse();
+                        setHistoryData(reversedHistory);
                     }
                 } else {
                     console.log("No such document!");

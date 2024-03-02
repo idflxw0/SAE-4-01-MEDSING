@@ -3,11 +3,13 @@ import {View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Image, Aler
 import { Ionicons,FontAwesome } from '@expo/vector-icons';
 import {LinearGradient} from "expo-linear-gradient";
 import DataMatrixScanner from "../../Components/DataMatrixScanner";
+
 import productList from "../../data/data.json";
-import useHistoryData from "../../hook/useHistoryData";
+
 import {auth, db} from "../config/firebase";
 import {doc, getDoc, setDoc,updateDoc} from "firebase/firestore";
 import {checkUserSession} from "../../hook/authSession";
+
 const HomeScreen = ({ navigation }) => {
     const [cipCode, setCipCode] = useState('');
     const [productName, setProductName] = useState('');
@@ -20,60 +22,44 @@ const HomeScreen = ({ navigation }) => {
     const navigateHistory = () => {
         navigation.navigate('History',{ history: history });
     }
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                console.log("User is logged in:", user);
-            } else {
-                console.log("No user session, navigating to login screen");
-                navigation.navigate('SignIn');
-            }
-            setIsUserChecked(true);
-        });
-        return () => unsubscribe(); // Cleanup subscription
-    }, [navigation]);
-
-        const handleSubmit = async () => {
-            if (!ValidProduct) {
-                Alert.alert('Invalid Product', 'The product code entered is not valid.');
-                return;
-            }
-            await checkUserSession();
-            const user = auth.currentUser;
-            if (!user) {
-                Alert.alert('Error', 'No authenticated user found.');
-                return;
-            }
-            const newEntry = {
-                date: new Date().toLocaleDateString(),
-                cipCode: cipCode,
-                name: productName,
-            };
-            const userDocRef = doc(db, "userData", user.uid);
-            try {
-                // Get the current document
-                const docSnap = await getDoc(userDocRef);
-
-                if (docSnap.exists()) {
-                    // If document exists, append the new entry to the existing history array
-                    const existingHistory = docSnap.data().history || [];
-                    await updateDoc(userDocRef, {
-                        history: [...existingHistory, newEntry] // Append new entry to existing history
-                    });
-                } else {
-                    // If the document does not exist, create it with the new entry in history
-                    await setDoc(userDocRef, { history: [newEntry] });
-                }
-
-                console.log('Product data has been saved');
-                setCipCode('');
-                setProductName('');
-                navigation.navigate('ConfirmationPage');
-            } catch (error) {
-                console.error("Error saving product data:", error);
-                Alert.alert('Error', 'Failed to save product data.');
-            }
+    const handleSubmit = async () => {
+        if (!ValidProduct) {
+            Alert.alert('Invalid Product', 'The product code entered is not valid.');
+            return;
+        }
+        await checkUserSession();
+        const user = auth.currentUser;
+        if (!user) {
+            Alert.alert('Error', 'No authenticated user found.');
+            return;
+        }
+        const newEntry = {
+            date: new Date().toLocaleDateString(),
+            cipCode: cipCode,
+            name: productName,
         };
+        const userDocRef = doc(db, "userData", user.uid);
+        try {
+            // Get the current document
+            const docSnap = await getDoc(userDocRef);
+
+            if (docSnap.exists()) {
+                const existingHistory = docSnap.data().history || [];
+                await updateDoc(userDocRef, {
+                    history: [...existingHistory, newEntry]
+                });
+            } else {
+                await setDoc(userDocRef, { history: [newEntry] });
+            }
+            console.log('Product data has been saved');
+            setCipCode('');
+            setProductName('');
+            navigation.navigate('ConfirmationPage');
+        } catch (error) {
+            console.error("Error saving product data:", error);
+            Alert.alert('Error', 'Failed to save product data.');
+        }
+    };
     const handleCipCode = (data) => {
         const product = productList.find(p => String(p.CIP) === String(data));
         if (!product) {
