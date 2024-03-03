@@ -116,6 +116,10 @@ const SettingsScreen = ({ navigation }) => {
                 <Text style={styles.optionText}>Help</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleNavigateToScreen('Admin')} style={styles.option}>
+                <Text style={styles.optionText}>Admin</Text>
+                <Ionicons name="chevron-forward" size={16} color="black" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => handleSignOut()} style={styles.option}>
                 <Text style={styles.optionText}>Log out</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />

@@ -24,6 +24,9 @@ import ForgotPassword from "./src/pages/LandingPages/PasswordManagementPages/For
 import OnboardingScreen from "./src/pages/LandingPages/LandingPage";
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './src/config/firebase';
+
+import AdminPage from "./src/pages/admin/AdminPage";
+
 const Stack = createStackNavigator();
 export default function App() {
     /*useEffect(() => {
@@ -72,6 +75,7 @@ export default function App() {
               <Stack.Screen name="Theme" component={ThemeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }} />
               <Stack.Screen name="About" component={AboutScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Admin" component={AdminPage} options={{ headerShown: true }} />
               <Stack.Screen name="Help" component={HelpScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
       </NavigationContainer>
