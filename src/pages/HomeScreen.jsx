@@ -7,15 +7,68 @@ import DataMatrixScanner from "../../Components/DataMatrixScanner";
 import productList from "../../data/data.json";
 
 import {auth, db} from "../config/firebase";
-import {doc, getDoc, setDoc,updateDoc} from "firebase/firestore";
+import {doc, getDoc, setDoc,updateDoc,addDoc, collection} from "firebase/firestore";
 import {checkUserSession} from "../../hook/authSession";
 
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const HomeScreen = ({ navigation }) => {
     const [cipCode, setCipCode] = useState('');
     const [productName, setProductName] = useState('');
     const [history, setHistory] = useState([]);
     const [ValidProduct, setValidProduct] = useState(false);
     const [isUserChecked, setIsUserChecked] = useState(false);
+    const [isConnected, setIsConnected] = useState(true);
+
+
+    const pushLocalDataToFirestore = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+            const localData = await AsyncStorage.getItem('offlineData') || '[]'; // Defaults to an empty array if null
+            const entries = JSON.parse(localData);
+
+            if (entries.length > 0) {
+                const userDocRef = doc(db, "userData", user.uid);
+                const docSnap = await getDoc(userDocRef);
+
+                let existingHistory = docSnap.exists() && docSnap.data().history ? docSnap.data().history : [];
+
+                existingHistory = [...existingHistory, ...entries];
+
+                if (docSnap.exists()) {
+                    await updateDoc(userDocRef, {
+                        history: existingHistory
+                    });
+                    console.log("History updated with offline data.");
+                } else {
+                    await setDoc(userDocRef, { history: existingHistory });
+                    console.log("New document created with offline data.");
+                }
+
+                console.log('All offline data has been pushed to Firestore');
+                await AsyncStorage.removeItem('offlineData'); // Clear local storage after sync
+            }
+        } catch (error) {
+            console.error('Error pushing local data to Firestore:', error);
+        }
+    };
+
+
+
+    useEffect(() => {
+        const unsubscribe = NetInfo.addEventListener(state => {
+            setIsConnected(state.isConnected);
+            if (state.isConnected) {
+                pushLocalDataToFirestore().then(r => {
+                    console.log('data pushed to firestore')});
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     const handleNavigateToSettings = () => {
         navigation.navigate('Settings');
     };
@@ -23,6 +76,10 @@ const HomeScreen = ({ navigation }) => {
         navigation.navigate('History',{ history: history });
     }
     const handleSubmit = async () => {
+        if (!cipCode.trim()) {
+            Alert.alert('Invalid Input', 'Please enter a valid CIP code.');
+            return;
+        }
         if (!ValidProduct) {
             Alert.alert('Invalid Product', 'The product code entered is not valid.');
             return;
@@ -38,11 +95,25 @@ const HomeScreen = ({ navigation }) => {
             cipCode: cipCode,
             name: productName,
         };
+
+        if (!isConnected) {
+            const existingData = await AsyncStorage.getItem('offlineData');
+            const newData = existingData ? [...JSON.parse(existingData), newEntry] : [newEntry];
+            await AsyncStorage.setItem('offlineData', JSON.stringify(newData));
+            console.log('Saved data locally as offline');
+            Alert.alert('Confirmation', 'Your data has been saved locally and will sync once online.');
+            setCipCode('');
+            setProductName('');
+            navigation.navigate('ConfirmationPage');
+        } else {
+            pushToFireStore(newEntry,user).then(()=>{console.log('Product data has been saved');});
+        }
+    };
+
+    const pushToFireStore = async (newEntry,user) => {
         const userDocRef = doc(db, "userData", user.uid);
         try {
-            // Get the current document
             const docSnap = await getDoc(userDocRef);
-
             if (docSnap.exists()) {
                 const existingHistory = docSnap.data().history || [];
                 await updateDoc(userDocRef, {
@@ -51,7 +122,6 @@ const HomeScreen = ({ navigation }) => {
             } else {
                 await setDoc(userDocRef, { history: [newEntry] });
             }
-            console.log('Product data has been saved');
             setCipCode('');
             setProductName('');
             navigation.navigate('ConfirmationPage');
@@ -59,7 +129,8 @@ const HomeScreen = ({ navigation }) => {
             console.error("Error saving product data:", error);
             Alert.alert('Error', 'Failed to save product data.');
         }
-    };
+    }
+
     const handleCipCode = (data) => {
         const product = productList.find(p => String(p.CIP) === String(data));
         if (!product) {
@@ -73,15 +144,19 @@ const HomeScreen = ({ navigation }) => {
     };
 
     const onHandleSubmitPress = () => {
+        if (!cipCode) {
+            Alert.alert('Error', 'Please enter a CIP code.');
+            return;
+        }
         handleCipCode(cipCode);
         if (ValidProduct) {
             handleSubmit()
-                .then(()=> {
-                    console.log('product has been reported')})
-                .catch(()=>{
-                    console.log('Error during submitting report')});
-        } else {
-            Alert.alert('Invalid CIP', 'The CIP code entered is not valid.');
+                .then(() => {
+                    console.log('Product has been reported');
+                })
+                .catch(() => {
+                    console.log('Error during submitting report');
+                });
         }
     };
 

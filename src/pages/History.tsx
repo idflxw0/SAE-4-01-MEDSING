@@ -39,14 +39,14 @@ const History = ({ navigation,route }) => {
             </View>
             <View style={styles.historyHeader}>
                 <Text style={styles.headerItem}>Date</Text>
-                <Text style={styles.headerItem}>Code CIP</Text>
+                <Text style={{marginRight:'8%',...styles.headerItem}}>Code CIP</Text>
                 <Text style={styles.headerItem}>Nom</Text>
             </View>
             <ScrollView style={styles.historyScrollView}>
                 {historyData.map((entry, index) => (
                     <View key={index} style={styles.historyEntry}>
-                        <Text style={styles.historyItem}>{entry.date}</Text>
-                        <Text style={styles.historyItem}>{entry.cipCode}</Text>
+                        <Text style={{marginLeft:'-5%', ...styles.historyItem}}>{entry.date}</Text>
+                        <Text style={{marginRight:'5%', ...styles.historyItem}}>{entry.cipCode}</Text>
                         <Text style={styles.historyItem}>{entry.name}</Text>
                     </View>
                 ))}
@@ -110,6 +110,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
+    historyItemCIP: {
+        marginRight: 2,
+    }
 });
 
 export default History;
