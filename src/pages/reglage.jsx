@@ -4,15 +4,14 @@ import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from expo/vect
 import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient from expo-linear-gradient
 import { auth,signOutUser } from '../config/firebase';
 import {clearUserSession} from "../../hook/authSession";
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = ({ navigation}) => {
     const logo1TranslateY = new Animated.Value(-500);
     const logo2TranslateY = new Animated.Value(-500);
     const logo1TranslateX = new Animated.Value(100);
     const logo2TranslateX = new Animated.Value(-100);
     const logo1Rotate = new Animated.Value(0);
     const logo2Rotate = new Animated.Value(0);
-
-
+    const user = auth.currentUser.email;
     const handleSignOut = async () => {
         try {
             await clearUserSession();
@@ -23,7 +22,6 @@ const SettingsScreen = ({ navigation }) => {
             console.error('Error signing out:', error);
         }
     };
-
 
     const startAnimation = () => {
         Animated.parallel([
@@ -116,10 +114,14 @@ const SettingsScreen = ({ navigation }) => {
                 <Text style={styles.optionText}>Help</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigateToScreen('Admin')} style={styles.option}>
-                <Text style={styles.optionText}>Admin</Text>
-                <Ionicons name="chevron-forward" size={16} color="black" />
-            </TouchableOpacity>
+
+            {user === process.env.EXPO_PUBLIC_ADMIN && (
+                <TouchableOpacity onPress={() => handleNavigateToScreen('Admin')} style={styles.option}>
+                    <Text style={styles.optionText}>Admin</Text>
+                    <Ionicons name="chevron-forward" size={16} color="black" />
+                </TouchableOpacity>
+                )
+            }
             <TouchableOpacity onPress={() => handleSignOut()} style={styles.option}>
                 <Text style={styles.optionText}>Log out</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
