@@ -75,7 +75,7 @@ export default function App() {
               <Stack.Screen name="Theme" component={ThemeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }} />
               <Stack.Screen name="About" component={AboutScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Admin" component={AdminPage} options={{ headerShown: true }} />
+              <Stack.Screen name="Admin" component={AdminPage} options={{ headerShown: false }} />
               <Stack.Screen name="Help" component={HelpScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
       </NavigationContainer>
