@@ -10,7 +10,7 @@ export const checkUserSession = async () => {
     try {
         const userSession = await AsyncStorage.getItem('userSession');
         if (userSession !== null) {
-            console.log('User session found:', JSON.parse(userSession));
+            // console.log('User session found:', JSON.parse(userSession));
             return true;
         } else {
             console.log('No user session found');

@@ -26,7 +26,6 @@ const HomeScreen = ({navigation}) => {
     const pushLocalDataToFirestore = async () => {
         const user = auth.currentUser;
         if (!user) return;
-
         try {
             const localData = await AsyncStorage.getItem('offlineData') || '[]'; // Defaults to an empty array if null
             const entries = JSON.parse(localData);
@@ -50,7 +49,7 @@ const HomeScreen = ({navigation}) => {
                 }
 
                 console.log('All offline data has been pushed to Firestore');
-                await AsyncStorage.removeItem('offlineData'); // Clear local storage after sync
+                await AsyncStorage.removeItem('offlineData');
             }
         } catch (error) {
             console.error('Error pushing local data to Firestore:', error);
@@ -62,9 +61,7 @@ const HomeScreen = ({navigation}) => {
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsConnected(state.isConnected);
             if (state.isConnected) {
-                pushLocalDataToFirestore().then(r => {
-                    console.log('data pushed to firestore')
-                });
+                pushLocalDataToFirestore().then(r => {});
             }
         });
 
