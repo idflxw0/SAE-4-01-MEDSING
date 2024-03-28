@@ -12,7 +12,9 @@ import {checkUserSession} from "../../hook/authSession";
 
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const HomeScreen = ({ navigation }) => {
+import { User } from 'firebase/auth';
+
+const HomeScreen = ({navigation}) => {
     const [cipCode, setCipCode] = useState('');
     const [productName, setProductName] = useState('');
     const [history, setHistory] = useState([]);
@@ -43,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
                     });
                     console.log("History updated with offline data.");
                 } else {
-                    await setDoc(userDocRef, { history: existingHistory });
+                    await setDoc(userDocRef, {history: existingHistory});
                     console.log("New document created with offline data.");
                 }
 
@@ -56,13 +58,13 @@ const HomeScreen = ({ navigation }) => {
     };
 
 
-
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsConnected(state.isConnected);
             if (state.isConnected) {
                 pushLocalDataToFirestore().then(r => {
-                    console.log('data pushed to firestore')});
+                    console.log('data pushed to firestore')
+                });
             }
         });
 
@@ -73,7 +75,7 @@ const HomeScreen = ({ navigation }) => {
         navigation.navigate('Settings');
     };
     const navigateHistory = () => {
-        navigation.navigate('History',{ history: history });
+        navigation.navigate('History', {history: history});
     }
     const handleSubmit = async () => {
         if (!cipCode.trim()) {
@@ -106,11 +108,13 @@ const HomeScreen = ({ navigation }) => {
             setProductName('');
             navigation.navigate('ConfirmationPage');
         } else {
-            pushToFireStore(newEntry,user).then(()=>{console.log('Product data has been saved');});
+            pushToFireStore(newEntry, user).then(() => {
+                console.log('Product data has been saved');
+            });
         }
     };
 
-    const pushToFireStore = async (newEntry,user) => {
+    const pushToFireStore = async (newEntry: { date: string; cipCode: string; name: string; }, user: User) => {
         const userDocRef = doc(db, "userData", user.uid);
         try {
             const docSnap = await getDoc(userDocRef);
@@ -131,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
         }
     }
 
-    const handleCipCode = (data) => {
+    const handleCipCode = (data: React.SetStateAction<string>) => {
         const product = productList.find(p => String(p.CIP) === String(data));
         if (!product) {
             setValidProduct(false);

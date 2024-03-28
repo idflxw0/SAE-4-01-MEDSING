@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { LinearGradient } from 'expo-linear-gradient';
 import { LineChart } from 'react-native-chart-kit';
 import { Ionicons } from "@expo/vector-icons";
+import Header from "../../../Components/Header";
+import { BarChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
+
 
 const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [medsCount, setMedsCount] = useState<{ [key: string]: number }>({});
@@ -33,8 +39,17 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         fetchUsersData();
     }, []);
 
+    const abbreviateName = (name: string) => {
+        const words = name.split(' ');
+        if(words.length > 1) {
+            return words.map(word => word[0].toUpperCase()).join('');
+        }
+        return name.length > 8 ? name.substr(0, 8) + '...' : name;
+    };
+
+
     const chartData = {
-        labels: Object.keys(medsCount).map(() => ''),
+        labels: Object.keys(medsCount).map(name => abbreviateName(name)),
         datasets: [
             {
                 data: Object.values(medsCount),
@@ -42,81 +57,66 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         ],
     };
 
+    const chartWidth = screenWidth - 40;
+    const chartConfig = {
+        backgroundColor: '#fff',
+        backgroundGradientFrom: '#ffffff',
+        backgroundGradientTo: '#ffffff',
+        color: (opacity = 1) => `rgba(100, 005, 205, ${opacity})`, // Using a nice cyan color
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Labels are dark for better contrast
+        strokeWidth: 2, // optional, default 3
+        barPercentage: 0.5,
+        useShadowColorFromDataset: false, // optional
+        style: {
+            borderRadius: 16,
+            fontFamily: 'sans-serif',
+        },
+    };
+
     return (
+    <View style={styles.container}>
         <LinearGradient
             colors={['#B7FFB1', '#FFE500']}
             style={styles.background}
-        >
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back" size={24} color="black" />
-            </TouchableOpacity>
-            <Text style={styles.heading}>Admin Dashboard</Text>
-
-            <View style={styles.container}>
-                <Text style={styles.statsTitle}>Medications Usage Statistics:</Text>
-                <LineChart
-                    data={chartData}
-                    width={300}
-                    height={200}
-                      yAxisSuffix=" times"
-                    chartConfig={{
-                        backgroundColor: '#FFFFFF',
-                        backgroundGradientFrom: '#FFFFFF',
-                        backgroundGradientTo: '#FFFFFF',
-                        decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        propsForDots: {
-                            r: "6",
-                            strokeWidth: "2",
-                            stroke: "#ffa726"
-                        }
-                    }}
-                    bezier
-                />
-            </View>
-        </LinearGradient>
+        />
+        <Header title={"Admin Dashboard"} navigation={navigation}></Header>
+        <Text style={styles.statsTitle}>Medications Usage Statistics:</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
+            <BarChart
+                data={chartData}
+                width={chartWidth}
+                height={300}
+                chartConfig={chartConfig}
+                fromZero={true}
+                showBarTops={true}
+                withInnerLines={true}
+                yAxisLabel=""
+                yAxisSuffix=""
+                verticalLabelRotation={30}
+            />
+        </ScrollView>
+    </View>
     );
 };
 
 const styles = StyleSheet.create({
-    background: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     container: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent white background
-        borderRadius: 10,
-        alignItems: 'center',
+        flexGrow: 1,
+        justifyContent: 'flex-start',
+        backgroundColor: 'transparent',
+        paddingTop: 50,
+        paddingHorizontal: 20,
+        width: '100%',
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
+    background: {
+        ...StyleSheet.absoluteFillObject,
     },
     statsTitle: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
     },
-    backButton: {
-        position: 'absolute',
-        top: '3%',
-        left: '3%',
-        marginTop: '5%',
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
+
 });
 
 export default AdminPage;
