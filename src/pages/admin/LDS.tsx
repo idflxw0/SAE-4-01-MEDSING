@@ -49,8 +49,8 @@ const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 <Header title={"Liste Signalement"} navigation={navigation}></Header>
             </View>
             <View style={styles.filtercontainer}>
-                <Image source={filter} style={{width: 30, height: 30, marginRight: 10,}}/>
-                <Text style={{color: "#fff", fontWeight: "bold", fontSize: 20}}>Filtrer</Text>
+                <Image source={filter} style={{width: 20, height: 20, marginRight: 10, marginLeft: 10,}}/>
+                <Text style={{color: "#fff", fontWeight: "bold", fontSize: 15}}>Filtrer</Text>
                 <TouchableOpacity onPress={() => handleFilterByAlph()} style={styles.option}>
                     <Text style={styles.optionText}>Alphabétique</Text>
                 </TouchableOpacity>
@@ -157,27 +157,28 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         backgroundColor: "#689FF7",
         height: 50,
+        width: "90%",
         borderRadius: 15,
-        justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
     },
     option: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '20%',
-        height: "8%",
+        width: '30%',
+        height: "80%",
+        marginLeft: 10,
         borderColor: 'transparent',
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 50,
         paddingHorizontal: 10,
         backgroundColor: "#ffffff"
-    }, 
+    },
     optionText: {
         flex: 1,
-        marginLeft: 10,
-        fontSize: 20,
+        fontSize: 10,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 
