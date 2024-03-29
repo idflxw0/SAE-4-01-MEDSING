@@ -46,38 +46,41 @@ const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             const usersCollectionRef = collection(db, "userData");
             const usersSnapshot = await getDocs(usersCollectionRef);
 
-            const usersData = usersSnapshot.docs.map(doc => doc.data());
+            const usersData = usersSnapshot.docs.map((doc) => doc.data());
 
             const medsNameToCIPMap = medsData.reduce((map, med) => {
                 map[med.Name] = med.CIP;
                 return map;
             }, {});
 
-            const medsCountMap: { [key: string]: number } = {};
-            usersData.forEach(user => {
+            const medsCountMap = {};
+            usersData.forEach((user) => {
                 if (user.history) {
-                    user.history.forEach(entry => {
-                        // Use the name to get the CIP from the mapping
+                    user.history.forEach((entry) => {
                         const cip = medsNameToCIPMap[entry.name];
                         if (cip) {
-                            if (medsCountMap[cip]) {
-                                medsCountMap[cip]++;
-                            } else {
-                                medsCountMap[cip] = 1;
-                            }
+                            medsCountMap[cip] = (medsCountMap[cip] || 0) + 1;
                         }
                     });
                 }
             });
-            setMedsCountByCIP(medsCountMap);
+
+            const medsCountArray = Object.entries(medsCountMap).map(([cip, count]) => {
+                const cipAsString = String(cip);
+                const medName = medsData.find((med) => String(med.CIP) === cipAsString)?.Name || '';
+                return {
+                    cipCode: cip,
+                    name: medName,
+                    count: count,
+                };
+            });
+
+
+            setHistoryData(medsCountArray);
         };
+
         fetchUsersData();
     }, []);
-
-    const formatCIP = (cip: string) => {
-        return '...' + cip.substr(cip.length - 9);
-    };
-
 
     return (
         <View style={styles.container}>
@@ -106,9 +109,9 @@ const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             <ScrollView style={styles.historyScrollView}>
                 {historyData.map((entry, index) => (
                     <View key={index} style={styles.historyEntry}>
-                        <Text style={{marginLeft:'-5%', ...styles.historyItem}}>{entry.date}</Text>
-                        <Text style={{marginRight:'5%', ...styles.historyItem}}>{entry.cipCode}</Text>
-                        <Text style={styles.historyItem}>{entry.name}</Text>
+                        <Text style={{marginLeft:'-5%', ...styles.historyItem}}>{entry.cipCode}</Text>
+                        <Text style={{marginRight:'-10%', ...styles.historyItem}}>{entry.name}</Text>
+                        <Text style={{ right : -20, ...styles.historyItem}}>{entry.count}</Text>
                     </View>
                 ))}
             </ScrollView>
@@ -189,6 +192,7 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
         fontWeight: 'bold',
+
     },
     historyItemCIP: {
         marginRight: 2,
