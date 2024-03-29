@@ -16,6 +16,7 @@ const people = require('../../../assets/people.1024x825.png');
 const list = require('../../../assets/cv.863x1024.png');
 const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
 
+
     const [medsCountByCIP, setMedsCountByCIP] = useState<{ [key: string]: number }>({});
 
     const [usersCount, setUsersCount] = useState<number>(0);
@@ -27,11 +28,21 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
     const dates = ['01', '02', '03', '04', '05', '06', '07'];
 
+    const date = new Date();
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const mois = monthNames[date.getMonth()];
+    console.log(mois); // This will print the current month
 
     const handleliste = () => {
         navigation.navigate('LDH');
     }
 
+
+    const  handleMonthSelection = () => {
+
+    }
     const fetchSignalCount = async () => {
         const signalCollectionRef = collection(db, "signalData");
         const signalSnapshot = await getDocs(signalCollectionRef);
@@ -147,15 +158,20 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         </View>
 
         <View style={styles.header}>
-            <Text style={styles.detailsText}>Details Signalements</Text>
-
+            <View style={styles.headertext}>
+                <Text style={styles.detailsText}>Details Signalements</Text>
+                <Text style={styles.detailsText2}>Mois-{mois}</Text>
+                <TouchableOpacity onPress={handleMonthSelection}>
+                    <Ionicons name="calendar" size={20} color="#007AFF" />
+                </TouchableOpacity>
+            </View>
             <View style={styles.dateRow}>
                 <TouchableOpacity style={styles.chevron}>
                     <Ionicons name="chevron-back-outline" size={16} color="black" />
                 </TouchableOpacity>
 
                 <ScrollView
-                    horizontal
+                    horizontal = {true}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.scrollViewContent}
                 >
@@ -299,22 +315,40 @@ const styles = StyleSheet.create({
         marginLeft: "3%",
     },
     header: {
-        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#F0F4F7',
         paddingHorizontal: 16,
         paddingTop: 16,
+        borderTopLeftRadius: 20,
+        borderTopEndRadius: 20,
+        height: 125,
+    },
+    headertext: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
     },
     detailsText: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
+        alignSelf: 'center', // Vertically center the text
+        marginBottom: 16,
+    },
+    detailsText2: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#000',
+        alignSelf: 'center', // Vertically center the text
+        marginBottom: 16,
+        marginLeft: 50,
     },
     dateRow: {
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
+        marginBottom: 16,
     },
     chevron: {
         padding: 8,
@@ -322,17 +356,19 @@ const styles = StyleSheet.create({
     scrollViewContent: {
         justifyContent: 'center',
         alignItems: 'center',
+        height: 57,
     },
     dateContainer: {
         backgroundColor: '#007AFF',
         borderRadius: 20,
-        paddingVertical: 8,
+        paddingVertical: 12,
         paddingHorizontal: 12,
-        marginHorizontal: 4,
+        marginHorizontal: 3,
         alignItems: 'center',
+        justifyContent: 'center',
     },
     selectedDateContainer: {
-        backgroundColor: 'darkblue', // Highlight color for the selected date
+        backgroundColor: '#0d477a', // Highlight color for the selected date
     },
     day: {
         fontSize: 14,
