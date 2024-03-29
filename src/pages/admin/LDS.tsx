@@ -32,28 +32,6 @@ const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         setIsSortedByCount(!isSortedByCount);
     };
 
-    const fetchHistoryData = async () => {
-        const user = auth.currentUser;
-        if (user) {
-            const userDocRef = doc(db, "userData", user.uid);
-            const docSnap = await getDoc(userDocRef);
-
-            if (docSnap.exists()) {
-                const userData = docSnap.data();
-                if (userData.history) {
-                    const reversedHistory = [...userData.history].reverse();
-                    setHistoryData(reversedHistory);
-                }
-            } else {
-                console.log("No such document!");
-            }
-        }
-    };
-
-    useEffect(() => {
-        fetchHistoryData();
-    }, []);
-
     const fetchUsersData = async () => {
         const usersCollectionRef = collection(db, "userData");
         const usersSnapshot = await getDocs(usersCollectionRef);
