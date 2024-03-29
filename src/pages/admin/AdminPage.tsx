@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, processColor} from 'react-native';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -78,7 +78,13 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     }, []);
 
     const formatCIP = (cip: string) => {
-        return cip.substr(cip.length - 9);
+        return '...' + cip.substr(cip.length - 9);
+    };
+
+    const calculateChartWidth = (dataLength: number) => {
+        const baseWidth = screenWidth - 40; // Base width for a single item
+        const itemWidth = 80; // Desired width per item in the chart
+        return dataLength * itemWidth > baseWidth ? dataLength * itemWidth : baseWidth;
     };
 
     const chartData = {
@@ -90,22 +96,23 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         ],
     };
 
-    const chartWidth = screenWidth - 40;
+
+    const dynamicChartWidth = calculateChartWidth(Object.keys(medsCountByCIP).length);
     const chartConfig = {
-        backgroundColor: '#fff',
-        backgroundGradientFrom: '#fff',
-        backgroundGradientTo: '#fff',
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Dark text for labels
-        barPercentage: 0.7,
+        backgroundColor: '#ffffff',
+        backgroundGradientFrom: '#ffffff',
+        backgroundGradientTo: '#ffffff',
+        decimalPlaces: 0, // ne pas afficher les décimales
+        color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
         style: {
-            borderRadius: 16,
+            borderRadius: 16
         },
-        propsForBackgroundLines: {
-            stroke: "none"
-        },
-        propsForLabels: {
-            fontSize: "10"
-        },
+        propsForDots: {
+            r: '6',
+            strokeWidth: '2',
+            stroke: '#ffa726'
+        }
     };
 
     return (
@@ -119,13 +126,13 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             <View style={[styles.infoItem, styles.infoItemFirst]}>
                 <Image source={people} style={styles.infoImage} />
                 <View>
-                    <Text style={styles.infoText}>Nombre     d’utilisateurs</Text>
+                    <Text style={styles.infoText}>Nombre d’utilisateurs</Text>
                     <Text style={styles.infoNumber}>{usersCount}</Text>
                 </View>
             </View>
             <View style={[styles.infoItem, styles.infoItemSecond]}>
                 <Image source={megaphone} style={styles.infoImage} />
-                <View>
+                <View >
                     <Text style={styles.infoText}>Nombre de signalements</Text>
                     <Text style={styles.infoNumber}>{signalCount}</Text>
                 </View>
@@ -136,7 +143,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
             <BarChart
                 data={chartData}
-                width={chartWidth}
+                width={dynamicChartWidth}
                 height={300}
                 chartConfig={chartConfig}
                 fromZero={true}
@@ -152,6 +159,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             <Text style={styles.optionText}>Liste signalement</Text>
             <Ionicons name="chevron-forward" size={16} color="black" />
         </TouchableOpacity>
+
     </View>
     );
 };
@@ -165,6 +173,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         width: '100%',
     },
+    chart: {
+        flex: 1
+    },
     background: {
         ...StyleSheet.absoluteFillObject,
     },
@@ -173,10 +184,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
     },
-    barChartStyle: {
-        marginVertical: 8,
-        borderRadius: 16
-    },
+
     infoContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -186,24 +194,28 @@ const styles = StyleSheet.create({
     infoItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         paddingVertical: 15,
         paddingHorizontal: 20,
         borderRadius: 15,
-        paddingLeft: 20,
         backgroundColor: '#FFFFFF',
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 1,
         width: '45%',
+        marginRight: '2.5%',
+        marginLeft: '2.5%',
     },
 
     infoText: {
         fontSize: 10,
         fontWeight: 'bold',
         textAlign: 'left',
+        flexShrink: 1,
+        flexWrap: 'wrap',
+        padding: 5,
     },
+
     infoNumber: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -217,11 +229,11 @@ const styles = StyleSheet.create({
         marginLeft: '2.5%', // Add left margin to the second item
         marginRight: '2.5%', // Add right margin to the first item
     },
+
     infoImage: {
-        width: "45%",
+        width: "45%", // reduced from 45% to give more space for text
         height: "95%",
         marginRight: 10,
-        marginLeft: 0,
     },
     option: {
         flexDirection: 'row',
