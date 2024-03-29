@@ -9,10 +9,30 @@ import { Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 const megaphone = require('../../../assets/megaphone.1024x886.png');
-const people = require('../../../assets/people.1024x886.png');
+const people = require('../../../assets/people.1024x825.png');
 
 const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [medsCount, setMedsCount] = useState<{ [key: string]: number }>({});
+    const [usersCount, setUsersCount] = useState<number>(0);
+    const [signalCount, setSignalCount] = useState<number>(0);
+
+
+    const fetchSignalCount = async () => {
+        const signalCollectionRef = collection(db, "signalData");
+        const signalSnapshot = await getDocs(signalCollectionRef);
+        setSignalCount(signalSnapshot.size);
+
+    }
+    signalCount === 0 && fetchSignalCount()
+    console.log("signal " + signalCount);
+    const fetchUsersCount = async () => {
+        const usersCollectionRef = collection(db, "userData");
+        const usersSnapshot = await getDocs(usersCollectionRef);
+        setUsersCount(usersSnapshot.size);
+
+    }
+    usersCount === 0 && fetchUsersCount()
+    console.log("users " + usersCount);
 
     useEffect(() => {
         const fetchUsersData = async () => {
@@ -83,15 +103,15 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             <View style={[styles.infoItem, styles.infoItemFirst]}>
                 <Image source={people} style={styles.infoImage} />
                 <View>
-                    <Text style={styles.infoText}>Nombre d’utilisateurs</Text>
-                    <Text style={styles.infoNumber}>102</Text>
+                    <Text style={styles.infoText}>Nombre     d’utilisateurs</Text>
+                    <Text style={styles.infoNumber}>{usersCount}</Text>
                 </View>
             </View>
             <View style={[styles.infoItem, styles.infoItemSecond]}>
                 <Image source={megaphone} style={styles.infoImage} />
                 <View>
                     <Text style={styles.infoText}>Nombre de signalements</Text>
-                    <Text style={styles.infoNumber}>1020</Text>
+                    <Text style={styles.infoNumber}>{signalCount}</Text>
                 </View>
             </View>
         </View>
@@ -136,6 +156,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 20,
+        width: '100%',
     },
     infoItem: {
         flexDirection: 'row',
@@ -154,7 +175,7 @@ const styles = StyleSheet.create({
     },
 
     infoText: {
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: 'bold',
         textAlign: 'left',
     },
@@ -172,9 +193,10 @@ const styles = StyleSheet.create({
         marginRight: '2.5%', // Add right margin to the first item
     },
     infoImage: {
-        width: 35,
-        height: 35,
+        width: "45%",
+        height: "95%",
         marginRight: 10,
+        marginLeft: 0,
     },
 });
 
