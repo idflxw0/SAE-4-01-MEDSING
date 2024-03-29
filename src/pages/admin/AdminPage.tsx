@@ -9,9 +9,10 @@ import { Dimensions } from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
 import medsData from '../../../data/data.json';
 const screenWidth = Dimensions.get('window').width;
+
 const megaphone = require('../../../assets/megaphone.1024x886.png');
 const people = require('../../../assets/people.1024x825.png');
-
+const list = require('../../../assets/cv.863x1024.png');
 const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     const [medsCountByCIP, setMedsCountByCIP] = useState<{ [key: string]: number }>({});
@@ -140,8 +141,9 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             />
         </ScrollView>
         <TouchableOpacity onPress={() => handleliste()} style={styles.option}>
-            <Image source={megaphone} style={styles.imgOption} />
+            <Image source={list} style={styles.imgOption} />
             <Text style={styles.optionText}>Liste signalement</Text>
+            <Ionicons name="chevron-forward" size={16} color="black" />
         </TouchableOpacity>
     </View>
     );
@@ -213,22 +215,27 @@ const styles = StyleSheet.create({
     option: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '80%',
-        height: 40,
-        borderColor: '#7C7272',
+        width: '100%',
+        height: "8%",
+        borderColor: 'transparent',
         borderWidth: 1,
         borderRadius: 5,
-        marginBottom: 20,
+        marginBottom: 100,
         paddingHorizontal: 10,
         justifyContent: 'space-between',
     },
     optionText: {
         flex: 1,
+        marginLeft: 10,
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     imgOption: {
-        width: 30,
-        height: 30,
-        marginRight: 10,
+        width: "11%",
+        height: "70%",
+        marginRight: "3%",
+        marginLeft: "3%",
+
     }
 });
 
