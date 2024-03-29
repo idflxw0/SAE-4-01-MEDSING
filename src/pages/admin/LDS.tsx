@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     },
     optionText: {
         flex: 1,
-        fontSize: 10,
+        fontSize: 7,
         fontWeight: 'bold',
         textAlign: 'center',
     },
