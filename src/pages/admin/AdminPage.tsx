@@ -70,9 +70,13 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         };
         fetchUsersData();
     }, []);
-    
+
+    const formatCIP = (cip: string) => {
+        return cip.substr(cip.length - 9);
+    };
+
     const chartData = {
-        labels: Object.keys(medsCountByCIP),
+        labels: Object.keys(medsCountByCIP).map(cip => formatCIP(cip)),
         datasets: [
             {
                 data: Object.values(medsCountByCIP),
@@ -92,6 +96,9 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         },
         propsForBackgroundLines: {
             stroke: "none"
+        },
+        propsForLabels: {
+            fontSize: "10"
         },
     };
 
@@ -126,9 +133,9 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 width={chartWidth}
                 height={300}
                 chartConfig={chartConfig}
-                fromZero={false}
-                showBarTops={true}
+                fromZero={true}
                 withInnerLines={true}
+                showBarTops={true}
                 yAxisLabel=""
                 yAxisSuffix=""
                 verticalLabelRotation={30}
@@ -154,6 +161,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+    },
+    barChartStyle: {
+        marginVertical: 8,
+        borderRadius: 16
     },
     infoContainer: {
         flexDirection: 'row',
