@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
     },
 
     infoImage: {
-        width: '40%',
-        height: '80%',
+        width: 47,
+        height: 40,
         marginRight: 10,
     },
     option: {
