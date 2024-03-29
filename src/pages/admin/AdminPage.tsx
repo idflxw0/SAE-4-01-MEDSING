@@ -125,14 +125,14 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         <View style={styles.infoContainer}>
             <View style={[styles.infoItem, styles.infoItemFirst]}>
                 <Image source={people} style={styles.infoImage} />
-                <View>
+                <View style={styles.textContainer}>
                     <Text style={styles.infoText}>Nombre d’utilisateurs</Text>
                     <Text style={styles.infoNumber}>{usersCount}</Text>
                 </View>
             </View>
             <View style={[styles.infoItem, styles.infoItemSecond]}>
                 <Image source={megaphone} style={styles.infoImage} />
-                <View >
+                <View>
                     <Text style={styles.infoText}>Nombre de signalements</Text>
                     <Text style={styles.infoNumber}>{signalCount}</Text>
                 </View>
@@ -179,6 +179,10 @@ const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject,
     },
+    textContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
     statsTitle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -208,12 +212,9 @@ const styles = StyleSheet.create({
     },
 
     infoText: {
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: 'bold',
         textAlign: 'left',
-        flexShrink: 1,
-        flexWrap: 'wrap',
-        padding: 5,
     },
 
     infoNumber: {
@@ -231,8 +232,8 @@ const styles = StyleSheet.create({
     },
 
     infoImage: {
-        width: "45%", // reduced from 45% to give more space for text
-        height: "95%",
+        width: "40%", // reduced from 45% to give more space for text
+        height: "70%",
         marginRight: 10,
     },
     option: {
