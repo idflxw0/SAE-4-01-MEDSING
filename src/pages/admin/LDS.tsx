@@ -10,16 +10,16 @@ import medsData from "../../../data/data.json";
 const filter = require('../../../assets/filter.1024x1010.png');
 const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [historyData, setHistoryData] = useState([]);
-    const [medsCountByCIP, setMedsCountByCIP] = useState<{ [key: string]: number }>({});
 
     const handleFilterByAlph = () => {
         const sortedHistory = [...historyData].sort((a, b) => a.name.localeCompare(b.name));
         setHistoryData(sortedHistory);
     };
     const handleFilterByNB = () => {
-        const sortedHistory = [...historyData].sort((a, b) => a.date.localeCompare(b.date));
+        const sortedHistory = [...historyData].sort((a, b) => b.count - a.count);
         setHistoryData(sortedHistory);
-    }
+    };
+
     useEffect(() => {
         const fetchHistoryData = async () => {
             const user = auth.currentUser;
