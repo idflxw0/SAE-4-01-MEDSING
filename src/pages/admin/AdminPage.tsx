@@ -23,7 +23,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
 
 
     const handleliste = () => {
-        navigation.navigate('History');
+        navigation.navigate('LDH');
     }
 
     const fetchSignalCount = async () => {

@@ -26,6 +26,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './src/config/firebase';
 
 import AdminPage from "./src/pages/admin/AdminPage";
+import UsersSignalsPage from "./src/pages/admin/LDS";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -77,6 +78,7 @@ export default function App() {
               <Stack.Screen name="About" component={AboutScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Admin" component={AdminPage} options={{ headerShown: false }} />
               <Stack.Screen name="Help" component={HelpScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="LDH" component={UsersSignalsPage} options={{ headerShown: false }} />
           </Stack.Navigator>
       </NavigationContainer>
 
