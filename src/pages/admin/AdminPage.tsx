@@ -8,7 +8,8 @@ import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
 import medsData from '../../../data/data.json';
-const screenWidth = Dimensions.get('window').width;
+import DropDownPicker from 'react-native-dropdown-picker';
+
 
 const megaphone = require('../../../assets/megaphone.1024x886.png');
 const people = require('../../../assets/people.1024x825.png');
@@ -19,6 +20,12 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     const [usersCount, setUsersCount] = useState<number>(0);
     const [signalCount, setSignalCount] = useState<number>(0);
+    const screenWidth = Dimensions.get('window').width;
+    const [month, setMonth] = useState('janvier');
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+    const dates = ['01', '02', '03', '04', '05', '06', '07'];
 
 
     const handleliste = () => {
@@ -59,7 +66,6 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             usersData.forEach(user => {
                 if (user.history) {
                     user.history.forEach(entry => {
-                        // Use the name to get the CIP from the mapping
                         const cip = medsNameToCIPMap[entry.name];
                         if (cip) {
                             if (medsCountMap[cip]) {
@@ -79,7 +85,9 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const formatCIP = (cip: string) => {
         return '...' + cip.substr(cip.length - 9);
     };
-
+    const selectDate = (date) => {
+        setSelectedDate(date);
+    };
     const calculateChartWidth = (dataLength: number) => {
         const baseWidth = screenWidth - 40; // Base width for a single item
         const itemWidth = 80; // Desired width per item in the chart
@@ -94,8 +102,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             },
         ],
     };
-
-
+    
     const dynamicChartWidth = calculateChartWidth(Object.keys(medsCountByCIP).length);
     const chartConfig = {
         backgroundColor: '#ffffff',
@@ -138,7 +145,40 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </View>
             </View>
         </View>
-        <Text style={styles.statsTitle}>Medications Usage Statistics:</Text>
+
+        <View style={styles.header}>
+            <Text style={styles.detailsText}>Details Signalements</Text>
+
+            <View style={styles.dateRow}>
+                <TouchableOpacity style={styles.chevron}>
+                    <Ionicons name="chevron-back-outline" size={16} color="black" />
+                </TouchableOpacity>
+
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollViewContent}
+                >
+                    {days.map((day, index) => (
+                        <TouchableOpacity
+                            key={day}
+                            style={[
+                                styles.dateContainer,
+                                selectedDate === dates[index] ? styles.selectedDateContainer : null,
+                            ]}
+                            onPress={() => selectDate(dates[index])}
+                        >
+                            <Text style={styles.day}>{day}</Text>
+                            <Text style={styles.date}>{dates[index]}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+
+                <TouchableOpacity style={styles.chevron}>
+                    <Ionicons name="chevron-forward-outline" size={16} color="black" />
+                </TouchableOpacity>
+            </View>
+        </View>
 
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
             <BarChart
@@ -257,8 +297,53 @@ const styles = StyleSheet.create({
         height: "70%",
         marginRight: "3%",
         marginLeft: "3%",
-
-    }
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#F0F4F7',
+        paddingHorizontal: 16,
+        paddingTop: 16,
+    },
+    detailsText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    dateRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    chevron: {
+        padding: 8,
+    },
+    scrollViewContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    dateContainer: {
+        backgroundColor: '#007AFF',
+        borderRadius: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        marginHorizontal: 4,
+        alignItems: 'center',
+    },
+    selectedDateContainer: {
+        backgroundColor: 'darkblue', // Highlight color for the selected date
+    },
+    day: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    date: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
 });
 
 export default AdminPage;
