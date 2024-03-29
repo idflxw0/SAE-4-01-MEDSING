@@ -17,7 +17,6 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     const [medsCountByCIP, setMedsCountByCIP] = useState<{ [key: string]: number }>({});
 
-    const [medsCount, setMedsCount] = useState<{ [key: string]: number }>({});
     const [usersCount, setUsersCount] = useState<number>(0);
     const [signalCount, setSignalCount] = useState<number>(0);
 
