@@ -123,16 +123,17 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         />
         <Header title={"Admin Dashboard"} navigation={navigation}></Header>
         <View style={styles.infoContainer}>
-            <View style={[styles.infoItem, styles.infoItemFirst]}>
+            <View style={styles.infoItem}>
                 <Image source={people} style={styles.infoImage} />
                 <View style={styles.textContainer}>
-                    <Text style={styles.infoText}>Nombre d’utilisateurs</Text>
+                    <Text style={styles.infoText}>Nombre d'utilisateurs</Text>
                     <Text style={styles.infoNumber}>{usersCount}</Text>
                 </View>
             </View>
+
             <View style={[styles.infoItem, styles.infoItemSecond]}>
                 <Image source={megaphone} style={styles.infoImage} />
-                <View>
+                <View style={styles.textContainer}>
                     <Text style={styles.infoText}>Nombre de signalements</Text>
                     <Text style={styles.infoNumber}>{signalCount}</Text>
                 </View>
@@ -179,10 +180,7 @@ const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject,
     },
-    textContainer: {
-        flex: 1,
-        justifyContent: 'center',
-    },
+
     statsTitle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -195,26 +193,35 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         width: '100%',
     },
+
     infoItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 15,
+        justifyContent: 'flex-start', // Align items to the start of the container
+        paddingVertical: 10, // Adjust padding as needed
+        paddingHorizontal: 10, // Adjust padding as needed
         backgroundColor: '#FFFFFF',
+        borderRadius: 10, // Adjust for desired curvature of corners
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 1,
-        width: '45%',
-        marginRight: '2.5%',
-        marginLeft: '2.5%',
+        margin: 5, // Space between items
+        minWidth: '45%', // Minimum width for the item, adjust as needed
+        maxWidth: '48%', // Maximum width for the item to prevent overflow
     },
 
     infoText: {
         fontSize: 12,
         fontWeight: 'bold',
-        textAlign: 'left',
+        color: '#000',
+        marginBottom: 2,
+    },
+
+    textContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        marginLeft: 5,
     },
 
     infoNumber: {
@@ -232,8 +239,8 @@ const styles = StyleSheet.create({
     },
 
     infoImage: {
-        width: "40%", // reduced from 45% to give more space for text
-        height: "70%",
+        width: '40%', // reduced from 45% to give more space for text
+        height: '80%',
         marginRight: 10,
     },
     option: {
