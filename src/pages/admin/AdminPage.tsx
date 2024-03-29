@@ -131,7 +131,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </View>
             </View>
 
-            <View style={[styles.infoItem, styles.infoItemSecond]}>
+            <View style={styles.infoItem}>
                 <Image source={megaphone} style={styles.infoImage} />
                 <View style={styles.textContainer}>
                     <Text style={styles.infoText}>Nombre de signalements</Text>
@@ -197,18 +197,18 @@ const styles = StyleSheet.create({
     infoItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start', // Align items to the start of the container
-        paddingVertical: '2%', // Adjust padding as needed
-        paddingHorizontal: '3%', // Adjust padding as needed
+        justifyContent: 'flex-start',
+        paddingVertical: '2%',
+        paddingHorizontal: '3%',
         backgroundColor: '#FFFFFF',
-        borderRadius: 15, // Adjust for desired curvature of corners
+        borderRadius: 15,
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 1,
         margin: 5, 
-        minWidth: '45%', // Minimum width for the item, adjust as needed
-        maxWidth: '48%', // Maximum width for the item to prevent overflow
+        minWidth: '48%',
+        maxWidth: '48%',
     },
 
     infoText: {
@@ -229,17 +229,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'left',
     },
-    infoItemFirst: {
-        marginRight: '2.5%', // Add right margin to the first item
-        marginLeft: '2.5%', // Add left margin to the first item
-    },
-    infoItemSecond: {
-        marginLeft: '2.5%', // Add left margin to the second item
-        marginRight: '2.5%', // Add right margin to the first item
-    },
 
     infoImage: {
-        width: '40%', // reduced from 45% to give more space for text
+        width: '40%',
         height: '80%',
         marginRight: 10,
     },
