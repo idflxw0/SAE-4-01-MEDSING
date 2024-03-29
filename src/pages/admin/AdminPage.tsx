@@ -198,15 +198,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start', // Align items to the start of the container
-        paddingVertical: 10, // Adjust padding as needed
-        paddingHorizontal: 10, // Adjust padding as needed
+        paddingVertical: '2%', // Adjust padding as needed
+        paddingHorizontal: '3%', // Adjust padding as needed
         backgroundColor: '#FFFFFF',
-        borderRadius: 10, // Adjust for desired curvature of corners
+        borderRadius: 15, // Adjust for desired curvature of corners
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 1,
-        margin: 5, // Space between items
+        margin: 5, 
         minWidth: '45%', // Minimum width for the item, adjust as needed
         maxWidth: '48%', // Maximum width for the item to prevent overflow
     },
