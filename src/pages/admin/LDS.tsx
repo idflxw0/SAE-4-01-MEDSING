@@ -59,9 +59,9 @@ const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.historyHeader}>
-                <Text style={styles.headerItem}>Date</Text>
-                <Text style={{marginRight:'8%',...styles.headerItem}}>Code CIP</Text>
-                <Text style={styles.headerItem}>Nom</Text>
+                <Text style={styles.headerItem}>Code CIP</Text>
+                <Text style={{marginRight:'8%',...styles.headerItem}}>Nom</Text>
+                <Text style={styles.headerItem}>Nombres</Text>
             </View>
             <ScrollView style={styles.historyScrollView}>
                 {historyData.map((entry, index) => (
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     },
     optionText: {
         flex: 1,
-        fontSize: 7,
+        fontSize: 12,
         fontWeight: 'bold',
         textAlign: 'center',
     },
