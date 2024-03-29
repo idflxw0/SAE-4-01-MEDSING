@@ -64,7 +64,6 @@ const HomeScreen = ({navigation}) => {
                 pushLocalDataToFirestore().then(r => {});
             }
         });
-
         return () => unsubscribe();
     }, []);
 

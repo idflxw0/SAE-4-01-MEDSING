@@ -8,12 +8,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../Components/Header";
 import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-
+import medsData from '../../../data/data.json';
 const screenWidth = Dimensions.get('window').width;
 
 
 const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
-    const [medsCount, setMedsCount] = useState<{ [key: string]: number }>({});
+    const [medsCountByCIP, setMedsCountByCIP] = useState<{ [key: string]: number }>({});
 
     useEffect(() => {
         const fetchUsersData = async () => {
@@ -21,38 +21,38 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             const usersSnapshot = await getDocs(usersCollectionRef);
 
             const usersData = usersSnapshot.docs.map(doc => doc.data());
-            const medsCountMap: { [key: string]: number } = {};
 
+            const medsNameToCIPMap = medsData.reduce((map, med) => {
+                map[med.Name] = med.CIP;
+                return map;
+            }, {});
+
+            const medsCountMap: { [key: string]: number } = {};
             usersData.forEach(user => {
                 if (user.history) {
                     user.history.forEach(entry => {
-                        if (medsCountMap[entry.name]) {
-                            medsCountMap[entry.name]++;
-                        } else {
-                            medsCountMap[entry.name] = 1;
+                        // Use the name to get the CIP from the mapping
+                        const cip = medsNameToCIPMap[entry.name];
+                        if (cip) {
+                            if (medsCountMap[cip]) {
+                                medsCountMap[cip]++;
+                            } else {
+                                medsCountMap[cip] = 1;
+                            }
                         }
                     });
                 }
             });
-            setMedsCount(medsCountMap);
+            setMedsCountByCIP(medsCountMap);
         };
         fetchUsersData();
     }, []);
-
-    const abbreviateName = (name: string) => {
-        const words = name.split(' ');
-        if(words.length > 1) {
-            return words.map(word => word[0].toUpperCase()).join('');
-        }
-        return name.length > 8 ? name.substr(0, 8) + '...' : name;
-    };
-
-
+    
     const chartData = {
-        labels: Object.keys(medsCount).map(name => abbreviateName(name)),
+        labels: Object.keys(medsCountByCIP),
         datasets: [
             {
-                data: Object.values(medsCount),
+                data: Object.values(medsCountByCIP),
             },
         ],
     };
@@ -60,16 +60,15 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const chartWidth = screenWidth - 40;
     const chartConfig = {
         backgroundColor: '#fff',
-        backgroundGradientFrom: '#ffffff',
-        backgroundGradientTo: '#ffffff',
-        color: (opacity = 1) => `rgba(100, 005, 205, ${opacity})`, // Using a nice cyan color
-        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Labels are dark for better contrast
-        strokeWidth: 2, // optional, default 3
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false, // optional
+        backgroundGradientFrom: '#fff',
+        backgroundGradientTo: '#fff',
+        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Dark text for labels
+        barPercentage: 0.7,
         style: {
             borderRadius: 16,
-            fontFamily: 'sans-serif',
+        },
+        propsForBackgroundLines: {
+            stroke: "none"
         },
     };
 
@@ -87,7 +86,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 width={chartWidth}
                 height={300}
                 chartConfig={chartConfig}
-                fromZero={true}
+                fromZero={false}
                 showBarTops={true}
                 withInnerLines={true}
                 yAxisLabel=""
