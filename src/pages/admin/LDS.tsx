@@ -10,6 +10,14 @@ const filter = require('../../../assets/filter.1024x1010.png');
 const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [historyData, setHistoryData] = useState([]);
 
+    const handleFilterByAlph = () => {
+        const sortedHistory = [...historyData].sort((a, b) => a.name.localeCompare(b.name));
+        setHistoryData(sortedHistory);
+    };
+    const handleFilterByNB = () => {
+        const sortedHistory = [...historyData].sort((a, b) => a.date.localeCompare(b.date));
+        setHistoryData(sortedHistory);
+    }
     useEffect(() => {
         const fetchHistoryData = async () => {
             const user = auth.currentUser;
@@ -43,13 +51,13 @@ const UsersSignalsPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             <View style={styles.filtercontainer}>
                 <Image source={filter} style={{width: 30, height: 30, marginRight: 10,}}/>
                 <Text style={{color: "#fff", fontWeight: "bold", fontSize: 20}}>Filtrer</Text>
-                <TouchableOpacity onPress={() => handleliste()} style={styles.option}>
-                    <Image source={list} style={styles.imgOption} />
-                    <Text style={styles.optionText}>Liste signalement</Text>
-                    <Ionicons name="chevron-forward" size={16} color="black" />
+                <TouchableOpacity onPress={() => handleFilterByAlph()} style={styles.option}>
+                    <Text style={styles.optionText}>Alphabétique</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleFilterByNB()} style={styles.option}>
+                    <Text style={styles.optionText}>Nombres Signalements</Text>
                 </TouchableOpacity>
             </View>
-
             <View style={styles.historyHeader}>
                 <Text style={styles.headerItem}>Date</Text>
                 <Text style={{marginRight:'8%',...styles.headerItem}}>Code CIP</Text>
@@ -153,7 +161,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-    }
+    },
+    option: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '20%',
+        height: "8%",
+        borderColor: 'transparent',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        backgroundColor: "#ffffff"
+    }, 
+    optionText: {
+        flex: 1,
+        marginLeft: 10,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
 });
 
 export default UsersSignalsPage;
