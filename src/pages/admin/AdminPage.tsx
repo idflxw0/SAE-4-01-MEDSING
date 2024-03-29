@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from "../../../Components/Header";
 import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
+import {Ionicons} from "@expo/vector-icons";
 import medsData from '../../../data/data.json';
 const screenWidth = Dimensions.get('window').width;
 const megaphone = require('../../../assets/megaphone.1024x886.png');
@@ -19,6 +20,10 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [usersCount, setUsersCount] = useState<number>(0);
     const [signalCount, setSignalCount] = useState<number>(0);
 
+
+    const handleliste = () => {
+        navigation.navigate('History');
+    }
 
     const fetchSignalCount = async () => {
         const signalCollectionRef = collection(db, "signalData");
@@ -141,6 +146,10 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 verticalLabelRotation={30}
             />
         </ScrollView>
+        <TouchableOpacity onPress={() => handleliste()} style={styles.option}>
+            <Image source={megaphone} style={styles.imgOption} />
+            <Text style={styles.optionText}>Liste signalement</Text>
+        </TouchableOpacity>
     </View>
     );
 };
@@ -212,6 +221,26 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 0,
     },
+    option: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '80%',
+        height: 40,
+        borderColor: '#7C7272',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        justifyContent: 'space-between',
+    },
+    optionText: {
+        flex: 1,
+    },
+    imgOption: {
+        width: 30,
+        height: 30,
+        marginRight: 10,
+    }
 });
 
 export default AdminPage;
