@@ -11,26 +11,54 @@ const SignInScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
+    const [emailValid, setEmailValid] = useState(true);
+    const [passwordValid, setPasswordValid] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
+
     const handlePasswordForgot = () => {
         navigation.navigate('ForgotPassword');
     }
 
     const handleSignIn = () => {
-    loginUser(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            storeUserSession(user) // Store the entire user object
-                .then(()=>{
-                    console.log('User signed up:', user.uid);
-                });
-            navigation.navigate('HomeScreen');
-        })
-        .catch((error) => {
-            // There was an error signing in the user
-            console.error('Error signing in:', error);
-        });
-};
+        let isValid = true;
+        if (!email.trim()) {
+            setEmailValid(false);
+            isValid = false;
+        }
+        if (!password.trim()) {
+            setPasswordValid(false);
+            isValid = false;
+        }
+        if (isValid) {
+            authLogIn();
+        }
+        else {
+            setErrorMessage('Veuillez remplir tous les champs requis.');
+        }
+    };
 
+    const authLogIn = () => {
+        loginUser(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                storeUserSession(user) // Store the entire user object
+                    .then(()=>{
+                        console.log('User signed up:', user.uid);
+                    });
+                navigation.navigate('HomeScreen');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                console.log(errorCode);
+                const errorMessage = error.message;
+                if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-email'||errorCode === 'auth/user-not-found' || errorCode === 'auth/invalid-credential' ) {
+                    setErrorMessage('Email ou mot de passe invalide.');
+                } else {
+                    setErrorMessage(errorMessage);
+                }
+            }
+        );
+    }
     function togglePasswordVisibility() {
         setShowPassword(!showPassword);
     }
@@ -43,20 +71,26 @@ const SignInScreen = ({ navigation }) => {
             />
             <Header title={"Log in"} navigation={navigation}></Header>
             <TextInput
-                style={styles.input}
+                style={[styles.input, !emailValid && styles.errorBorder]}
                 placeholder="Email"
                 placeholderTextColor="#000"
                 keyboardType="email-address"
-                onChangeText={(text) => setEmail(text)}
+                onChangeText={(text) => {
+                    setEmail(text);
+                    setEmailValid(true);
+                }}
             />
 
             <View style={styles.passwordContainer}>
                 <TextInput
-                    style={styles.passwordInput}
+                    style={[styles.passwordInput, !passwordValid && styles.errorBorder]}
                     placeholder="Password"
                     placeholderTextColor="#000"
                     secureTextEntry={!showPassword} // Show or hide password based on showPassword state
-                    onChangeText={(text) => setPassword(text)}
+                    onChangeText={(text) => {
+                        setPassword(text)
+                        setPasswordValid(true)
+                    }}
                 />
                 <TouchableOpacity
                     style={styles.eyeIcon}
@@ -65,6 +99,10 @@ const SignInScreen = ({ navigation }) => {
                     <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="#000" />
                 </TouchableOpacity>
             </View>
+
+            {errorMessage ? (
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+            ) : null}
 
             <CustomButton buttonText="Log in" onPress={handleSignIn} />
 
@@ -120,6 +158,17 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         marginTop: 15,
         marginBottom: 15,
+    },
+    errorBorder: {
+        borderColor: '#FF1600', // Change to your preferred error color
+    },
+    errorMessage: {
+        color: '#FF1600',
+        marginTop: 10,
+        marginBottom: 10,
+        fontWeight: 'bold',
+        fontSize: 16,
+        alignSelf: 'flex-start',
     },
     forgotPassword: {
         fontWeight: 'bold',

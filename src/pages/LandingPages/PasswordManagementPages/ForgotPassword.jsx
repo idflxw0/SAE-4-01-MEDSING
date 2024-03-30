@@ -8,6 +8,7 @@ import {sendPasswordResetEmail } from "firebase/auth";
 const ForgotPassword = ({navigation}) => {
     const [email, setEmail] = useState('');
     const handleContinue = () => {
+        if(email === '') return;
         sendPasswordResetEmail(auth,email).then(() => {
             navigation.navigate('ResetConfirmation', { email: email });
         })
