@@ -159,14 +159,17 @@ const SignUpScreen = ({ navigation }) => {
             </Text>
             <View style={styles.termsContainer}>
                 <TouchableOpacity style={styles.checkbox} onPress={toggleCheckbox}>
-                    {isChecked && <FontAwesome name="check" size={18} color="black" style={styles.checkIcon}/>}
+                    {isChecked && <FontAwesome name="check" size={18} color="black" />}
                 </TouchableOpacity>
                 <Text style={styles.termsText}>
                     By signing up, you agree to the{' '}
-                    <Text style={styles.linkText}>
-                        Terms of Service and Privacy Policy
-                    </Text>
                 </Text>
+                <TouchableOpacity onPress={() => { navigation.navigate('Terms') }}>
+                    <Text style={styles.linkText}>Terms of Service and</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { navigation.navigate('Terms') }}>
+                    <Text style={styles.linkText}>Privacy Policy</Text>
+                </TouchableOpacity>
             </View>
             <CustomButton buttonText="Sign up" onPress={handleSignUp}></CustomButton>
 
@@ -216,7 +219,9 @@ const styles = StyleSheet.create({
     termsContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        flexWrap: 'wrap', // Allow wrapping only if necessary
         marginBottom: 20,
+        marginRight: -10, // Negate the padding of the checkbox
     },
     checkbox: {
         width: 24,

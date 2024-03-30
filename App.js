@@ -28,6 +28,7 @@ import { auth } from './src/config/firebase';
 import AdminPage from "./src/pages/admin/AdminPage";
 import UsersSignalsPage from "./src/pages/admin/LDS";
 import ModifProfile from "./src/pages/ModifProfile";
+import TermsScreen from "./src/pages/LandingPages/components/TermsScreen";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -66,6 +67,7 @@ export default function App() {
               <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }}/>
               <Stack.Screen name="ResetConfirmation" component={ResetConfirmation} options={{ headerShown: false }}/>
               <Stack.Screen name="PasswordReset" component={PasswordReset} options={{ headerShown: false }}/>
+              <Stack.Screen name="Terms" component={TermsScreen} options={{ headerShown: false }}/>
 
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
