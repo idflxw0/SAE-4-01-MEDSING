@@ -2,39 +2,42 @@ import React, {useState} from 'react';
 import {StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const CustomInput = ({inputType,value, setValue}) => {
+const CustomInput = ({inputType,value, setValue, isValid,setIsValid,setErrorMessage}) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [showEyeIcon, setShowEyeIcon] = useState(false);
     const [password, setPassword] = useState('');
     const handleInputChange = (text) => {
-        setPassword(text);
+        setValue(text);
+        setIsValid(true);
+        setErrorMessage('');
         setShowEyeIcon(text.length > 0);
     };
     const handlePasswordVisibility = () => {
         setIsPasswordVisible((prev) => !prev);
     };
+
     return (
         <View style={styles.inputContainer}>
             {!inputType.toLowerCase().includes('password')  && (
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, !isValid && styles.inputError]}
                     placeholder={inputType}
                     placeholderTextColor="#000"
                     keyboardType={inputType === 'Email' ? 'email-address' : 'default'}
                     secureTextEntry={inputType === 'Password' && !isPasswordVisible}
                     value={value}
-                    onChangeText={setValue}
+                    onChangeText={handleInputChange}
                 />
             )}
             {inputType.toLowerCase().includes('password') && (
                 <View style={styles.passwordContainer}>
                     <TextInput
-                        style={[styles.input, styles.passwordInput]}
+                        style={[styles.input, styles.passwordInput, !isValid && styles.inputError]}
                         placeholder={inputType}
                         placeholderTextColor="#000"
-                        onChangeText={setValue}
                         secureTextEntry={!isPasswordVisible}
                         value={value}
+                        onChangeText={handleInputChange}
                     />
                     {showEyeIcon && (
                         <TouchableOpacity style={styles.eyeIcon} onPress={handlePasswordVisibility}>
@@ -67,6 +70,9 @@ const styles = StyleSheet.create({
         marginTop : 12,
         marginBottom: 5,
     },
+    inputError: {
+        borderColor: '#FF1600', // Change this color as per your design
+    },
     passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -74,6 +80,7 @@ const styles = StyleSheet.create({
     },
     passwordInput: {
         flex: 1,
+
     },
     eyeIcon: {
         position: 'absolute',

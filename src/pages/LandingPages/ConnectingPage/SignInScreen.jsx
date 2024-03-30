@@ -3,9 +3,9 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'reac
 import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons from expo/vector-icons
 import Header from '../../../../Components/Header';
 import CustomButton from "../components/CustomButton";
-import {LinearGradient} from "expo-linear-gradient";
-import { auth,loginUser } from '../../../config/firebase';
-import {storeUserSession} from "../../../../hook/authSession";
+import { LinearGradient } from "expo-linear-gradient";
+import { auth, loginUser } from '../../../config/firebase';
+import { storeUserSession } from "../../../../hook/authSession";
 const SignInScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -42,22 +42,21 @@ const SignInScreen = ({ navigation }) => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 storeUserSession(user) // Store the entire user object
-                    .then(()=>{
+                    .then(() => {
                         console.log('User signed up:', user.uid);
                     });
                 navigation.navigate('HomeScreen');
             })
             .catch((error) => {
                 const errorCode = error.code;
-                console.log(errorCode);
                 const errorMessage = error.message;
-                if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-email'||errorCode === 'auth/user-not-found' || errorCode === 'auth/invalid-credential' ) {
+                if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-email' || errorCode === 'auth/user-not-found' || errorCode === 'auth/invalid-credential') {
                     setErrorMessage('Email ou mot de passe invalide.');
                 } else {
                     setErrorMessage(errorMessage);
                 }
             }
-        );
+            );
     }
     function togglePasswordVisibility() {
         setShowPassword(!showPassword);
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
         paddingTop: 50,
         paddingHorizontal: 20,
     },
-    background : {
+    background: {
         ...StyleSheet.absoluteFillObject,
     },
     input: {

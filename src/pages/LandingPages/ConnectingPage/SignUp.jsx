@@ -18,6 +18,11 @@ const SignUpScreen = ({ navigation }) => {
     const [name, setName] = useState('');
     const MINIMAL_PASSWORD_LENGTH = 6;
 
+    const [nameValid, setNameValid] = useState(true);
+    const[emailValid, setEmailValid] = useState(true);
+    const[passwordValid, setPasswordValid] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
+
     const toggleCheckbox = () => {
         setIsChecked((prev) => !prev);
     };
@@ -26,8 +31,6 @@ const SignUpScreen = ({ navigation }) => {
         const emailRegex = /^\S+@\S+\.\S+$/;
         return emailRegex.test(email);
     };
-
-
     function getMailChecker(isValid) {
         return isValid ? "Email is valid" : "Email isn't valid";
     }
@@ -54,19 +57,19 @@ const SignUpScreen = ({ navigation }) => {
     const getPasswordChecker = (passwordCheckResult) => {
         switch (passwordCheckResult) {
             case 'Your password must contain at least 8 characters.':
-                return 'Password is too short.';
+                return 'Le mot de passe est trop court.';
             case 'Your password must contain at least one capital letter.':
-                return 'Password needs at least one capital letter.';
+                return 'Le mot de passe nécessite au moins une lettre majuscule.';
             case 'Your password must contain at least one lower case letter.':
-                return 'Password needs at least one lowercase letter.';
+                return 'Le mot de passe nécessite au moins une lettre minuscule.';
             case 'Your password must contain at least one number.':
                 return 'Password needs at least one number.';
             case 'Your password must contain at least one special character.':
-                return 'Password needs at least one special character.';
+                return 'Le mot de passe nécessite au moins un chiffre.';
             case 'Your password is secured':
-                return 'Password is secure. Good job!';
+                return 'Le mot de passe est sécurisé. Bon travail!';
             default:
-                return 'Invalid password';
+                return 'Mot de passe incorrect';
         }
     };
 
@@ -99,8 +102,29 @@ const SignUpScreen = ({ navigation }) => {
         }
     };
 
-
     const handleSignUp = () => {
+        let isValid = true;
+        if (!name.trim()) {
+            setNameValid(false);
+            isValid =false;
+        }
+        if (!email.trim() || !checkMail(email)) {
+            setEmailValid(false);
+            isValid =false;
+        }
+        if (!password.trim) {
+            setPasswordValid(false);
+            isValid = false;
+        }
+        if (isValid) {
+            createAuthUser();
+        }
+        else {
+            setErrorMessage('Veuillez remplir tous les champs requis.')
+        }
+    };
+
+    const createAuthUser = () => {
         createUser(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
@@ -109,12 +133,12 @@ const SignUpScreen = ({ navigation }) => {
                 })
             })
             .catch((error) => {
-                // There was an error signing up the user
-                console.log(email);
+                const errorCode = error.code;
+                const errorMessage = error.message;
                 console.error('Error signing up:', error);
+                setErrorMessage(errorMessage);
             });
-    };
-
+    }
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -123,12 +147,13 @@ const SignUpScreen = ({ navigation }) => {
             />
             <Header title={"Sign up"} navigation={navigation}></Header>
 
-            <CustomInput inputType={"Name"} value={name} setValue={setName} />
-            <CustomInput inputType={"Email"} value={email} setValue={setEmail}/>
+            <CustomInput inputType={"Name"} value={name} setValue={setName} isValid={nameValid} setIsValid={setNameValid} setErrorMessage={setErrorMessage} />
+            <CustomInput inputType={"Email"} value={email} setValue={setEmail} isValid={emailValid} setIsValid={setEmailValid} setErrorMessage={setErrorMessage} />
             <Text style={getCheckerStyle(email, 'email')}>
                 {getMailChecker(checkMail(email))}
             </Text>
-            <CustomInput inputType={"Password"} value={password} setValue={setPassword} />
+            <CustomInput inputType={"Password"} value={password} setValue={setPassword} isValid={passwordValid} setIsValid={setPasswordValid} setErrorMessage={setErrorMessage} />
+            {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
             <Text style={getCheckerStyle(password, 'password')}>
                 {getPasswordChecker(checkPassword(password))}
             </Text>
@@ -218,6 +243,14 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         marginBottom: 15,
         alignSelf: 'stretch',
+    },
+    errorMessage: {
+        color: '#FF1600',
+        marginTop: 10,
+        marginBottom: 10,
+        fontWeight: 'bold',
+        fontSize: 16,
+        alignSelf: 'flex-start',
     },
     LogoImageStyle : {
       marginLeft : 65,
