@@ -23,13 +23,9 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [signalCount, setSignalCount] = useState<number>(0);
     const screenWidth = Dimensions.get('window').width;
     const [month, setMonth] = useState('janvier');
-    const [selectedDate, setSelectedDate] = useState(null);
 
-    const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
-    const today = new Date().getDate();
-
-    // Generate dates array based on the number of days in the month
-    const dates = Array.from({ length: days.length }, (_, i) => i + 1);
+    // const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+    const today = new Date();
 
     const date = new Date();
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -38,12 +34,27 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const mois = monthNames[date.getMonth()];
     console.log(mois); // This will print the current month
 
+    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    const [selectedDate, setSelectedDate] = useState(today.getDate());
+
+    // Function to handle selecting a date
+    // @ts-ignore
+    const selectDate = (date) => {
+        setSelectedDate(date);
+        // Add your logic here when a date is selected
+    };
+    const dates = Array.from({ length: daysInMonth }, (_, i) => String(i + 1).padStart(2, '0')); // Pad single digits with leading zeros
+
+    // Get the matching day name for each date
+    const dayAbbreviations = dates.map((date) => {
+        // @ts-ignore
+        const currentDate = new Date(today.getFullYear(), today.getMonth(), date);
+        return currentDate.toLocaleDateString('en-US', { weekday: 'short' });
+    });
+
     const handleliste = () => {
         navigation.navigate('LDH');
     }
-
-
-
 
     const  handleMonthSelection = () => {
 
@@ -101,9 +112,9 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const formatCIP = (cip: string) => {
         return '...' + cip.substr(cip.length - 9);
     };
-    const selectDate = (date) => {
-        setSelectedDate(date);
-    };
+    // const selectDate = (date) => {
+    //     setSelectedDate(date);
+    // };
     const calculateChartWidth = (dataLength: number) => {
         const baseWidth = screenWidth - 40; // Base width for a single item
         const itemWidth = 80; // Desired width per item in the chart
@@ -183,10 +194,10 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                                 style={[
                                     styles.dateContainer,
                                     selectedDate === date ? styles.selectedDateContainer : null,
-                                    today === date ? styles.todayContainer : null, // Highlight today's date
                                 ]}
                                 onPress={() => selectDate(date)}
                             >
+                                <Text style={styles.dayName}>{dayAbbreviations[index]}</Text>
                                 <Text style={styles.date}>{date}</Text>
                             </TouchableOpacity>
                         ))}
@@ -421,6 +432,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         marginTop: 16,
+    },
+    dayName: {
+        fontSize: 12,
+        color: '#fff',
+        fontWeight: 'bold',
+        marginTop: 4,
     },
 });
 
