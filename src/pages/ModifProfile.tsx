@@ -13,6 +13,7 @@ import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 import {doc, setDoc, updateDoc} from "firebase/firestore";
 import { updatePassword } from "firebase/auth";
 import {useUserProfile} from "../../hook/useUserProfile";
+import {LinearGradient} from "expo-linear-gradient";
 interface ClearableTextInputProps {
     value: string;
     onChangeText: (text: string) => void;
@@ -68,9 +69,6 @@ const ModifProfile = ({ navigation }) => {
         const formatted = cleaned.substring(0, 10);
         setBirthDate(formatted);
     };
-
-
-
 
     const pickImage = async () => {
         const hasPermission = await getFilePermission();
@@ -157,72 +155,99 @@ const ModifProfile = ({ navigation }) => {
     };
     // @ts-ignore
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
-            <ScrollView>
-                <View style={styles.headerTitle}>
-                    <Header title={'Votre compte'} navigation={navigation} />
-                </View>
-                <View style={styles.profileSection}>
-                    <Image
-                        source={userProfile?.profilePicture
-                            ? { uri: userProfile.profilePicture }
-                            : require('../../assets/Default_pfp.png')}
-                        style={styles.profilePic}
-                    />
-                    <Text style={styles.userName}>{userProfile?.name}</Text>
-                    <Text style={styles.editPhotoText} onPress={pickImage}>Modifier la photo</Text>
-                </View>
-                <View style={styles.infoSection}>
-                    <ClearableTextInput
-                        value={name}
-                        onChangeText={setName}
-                        placeholder="Nom"
-                    />
-                    <ClearableTextInput
-                        value={birthDate}
-                        onChangeText={handleBirthDateChange}
-                        placeholder="jj/mm/aaaa"
-                        keyboardType="phone-pad"
-                    />
-                    <ClearableTextInput
-                        value={phone}
-                        onChangeText={setPhone}
-                        placeholder="Téléphone"
-                        keyboardType="phone-pad"
-                    />
-                    <ClearableTextInput
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholder="Mot de passe"
-                        secureTextEntry={true}
-                    />
-                </View>
-                <TouchableOpacity style={styles.button} onPress={handleSaveProfile}>
-                    <Text style={styles.buttonText}>Valider les changements</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </KeyboardAvoidingView>
+        <View style={styles.container}>
+            <LinearGradient
+                // Background Linear Gradient
+                colors={['#B7FFB1', '#FFE500']}
+                style={styles.background}
+            />
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
+                <ScrollView>
+                    <View style={styles.headerTitle}>
+                        <Header title={'Votre compte'} navigation={navigation} />
+                    </View>
+                    <View style={styles.profileSection}>
+                        <Image
+                            source={userProfile?.profilePicture
+                                ? { uri: userProfile.profilePicture }
+                                : require('../../assets/Default_pfp.png')}
+                            style={styles.profilePic}
+                        />
+                        <Text style={styles.userName}>{userProfile?.name}</Text>
+                        <Text style={styles.editPhotoText} onPress={pickImage}>Modifier la photo</Text>
+                    </View>
+                    <View style={styles.infoSection}>
+                        <ClearableTextInput
+                            value={name}
+                            onChangeText={setName}
+                            placeholder="Nom"
+                        />
+                        <ClearableTextInput
+                            value={birthDate}
+                            onChangeText={handleBirthDateChange}
+                            placeholder="jj/mm/aaaa"
+                            keyboardType="phone-pad"
+                        />
+                        <ClearableTextInput
+                            value={phone}
+                            onChangeText={setPhone}
+                            placeholder="Téléphone"
+                            keyboardType="phone-pad"
+                        />
+                        <ClearableTextInput
+                            value={password}
+                            onChangeText={setPassword}
+                            placeholder="Mot de passe"
+                            secureTextEntry={true}
+                        />
+                    </View>
+                    <TouchableOpacity style={styles.button} onPress={handleSaveProfile}>
+                        <Text style={styles.buttonText}>Valider les changements</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </View>
+
     );
 };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#95E1D3', // Light cyan background color
+    },
+    background: {
+        width: '100%',     // Set width to the screen width
+        height: '100%',   // Set height to the screen height
+        position: 'absolute', // Use absolute positioning to overlay
+        top: 0,
+        left: 0
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 1,
         borderBottomColor: 'grey',
+        backgroundColor: '#FFFFFF',
         marginBottom: 20,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.05,
+        shadowRadius: 3.84,
     },
     input: {
         flex: 1,
-        height: 40,
+        height: 50,
         fontSize: 16,
+        paddingLeft: 15,
+        color: '#374151',
     },
     headerTitle: {
         marginTop: '2%',
@@ -233,6 +258,7 @@ const styles = StyleSheet.create({
     },
     profileSection: {
         marginTop: '-35%',
+        borderColor: '#FFFFFF',
         alignItems: 'center',
         padding: 20,
     },
@@ -241,6 +267,15 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         borderRadius: 50,
+        borderWidth: 3,
+        borderColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
     },
     userName: {
         fontWeight: 'bold',
@@ -272,13 +307,23 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     button: {
-        backgroundColor: 'white',
-        padding: 15,
-        margin: 20,
+        backgroundColor: '#FFFFFF', // A modern, vibrant button color
+        paddingVertical: 15,
+        paddingHorizontal: 30,
         borderRadius: 10,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 4.65,
+        elevation: 8,
+        marginHorizontal: 20,
+        marginBottom: 20,
     },
     buttonText: {
         textAlign: 'center',
+        fontSize: 16,
         color: '#4287F5',
         fontWeight: 'bold',
     },
