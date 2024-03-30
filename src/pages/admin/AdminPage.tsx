@@ -26,7 +26,11 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(null);
 
     const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
-    const dates = ['01', '02', '03', '04', '05', '06', '07'];
+    /*const dates = ['01', '02', '03', '04', '05', '06', '07'];*/
+    const today = new Date().getDate();
+
+    // Generate dates array based on the number of days in the month
+    const dates = Array.from({ length: days.length }, (_, i) => i + 1);
 
     const date = new Date();
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -38,6 +42,8 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const handleliste = () => {
         navigation.navigate('LDH');
     }
+
+
 
 
     const  handleMonthSelection = () => {
@@ -165,7 +171,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                     <Ionicons name="calendar" size={20} color="#007AFF" />
                 </TouchableOpacity>
             </View>
-            <View style={styles.dateRow}>
+            {/*<View style={styles.dateRow}>
                 <TouchableOpacity style={styles.chevron}>
                     <Ionicons name="chevron-back-outline" size={16} color="black" />
                 </TouchableOpacity>
@@ -181,6 +187,32 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                             style={[
                                 styles.dateContainer,
                                 selectedDate === dates[index] ? styles.selectedDateContainer : null,
+                            ]}
+                            onPress={() => selectDate(dates[index])}
+                        >
+                            <Text style={styles.day}>{day}</Text>
+                            <Text style={styles.date}>{dates[index]}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+
+                <TouchableOpacity style={styles.chevron}>
+                    <Ionicons name="chevron-forward-outline" size={16} color="black" />
+                </TouchableOpacity>
+            </View>*/}
+            <View style={styles.dateRow}>
+                <TouchableOpacity style={styles.chevron}>
+                    <Ionicons name="chevron-back-outline" size={16} color="black" />
+                </TouchableOpacity>
+
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    {days.map((day, index) => (
+                        <TouchableOpacity
+                            key={day}
+                            style={[
+                                styles.dateContainer,
+                                selectedDate === dates[index] ? styles.selectedDateContainer : null,
+                                today === index + 1 ? styles.todayContainer : null, // Highlight today's date
                             ]}
                             onPress={() => selectDate(dates[index])}
                         >
@@ -344,7 +376,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         marginLeft: 50,
     },
-    dateRow: {
+    /*dateRow: {
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
@@ -352,13 +384,13 @@ const styles = StyleSheet.create({
     },
     chevron: {
         padding: 8,
-    },
+    },*/
     scrollViewContent: {
         justifyContent: 'center',
         alignItems: 'center',
         height: 57,
     },
-    dateContainer: {
+    /*dateContainer: {
         backgroundColor: '#007AFF',
         borderRadius: 20,
         paddingVertical: 12,
@@ -369,6 +401,39 @@ const styles = StyleSheet.create({
     },
     selectedDateContainer: {
         backgroundColor: '#0d477a', // Highlight color for the selected date
+    },
+    day: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    date: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: 'bold',
+    },*/
+
+
+    dateRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    chevron: {
+        padding: 8,
+    },
+    dateContainer: {
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        marginHorizontal: 4,
+        borderRadius: 10,
+        backgroundColor: '#007AFF',
+        alignItems: 'center',
+    },
+    selectedDateContainer: {
+        backgroundColor: 'darkblue', // Highlight color for the selected date
+    },
+    todayContainer: {
+        backgroundColor: 'red', // Highlight color for today's date
     },
     day: {
         fontSize: 14,
