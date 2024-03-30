@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, processColor} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, processColor, Modal, FlatList} from 'react-native';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,9 +23,53 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [signalCount, setSignalCount] = useState<number>(0);
     const screenWidth = Dimensions.get('window').width;
     const [month, setMonth] = useState('janvier');
-
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedMonth, setSelectedMonth] = useState('');
+    const [daysInMonth, setDaysInMonth] = useState(0);
     // const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+
+    const handleMonthSelection = (month) => {
+        // Set the selected month
+        setSelectedMonth(month);
+        const currentDate = new Date();
+        const currentMonth = monthNames[currentDate.getMonth()];
+        // Get the current year
+        const currentYear = new Date().getFullYear();
+        if (month === currentMonth) {
+            setSelectedDate(currentDate.getDate());
+            // Close the modal
+            setModalVisible(false);
+        }
+        else {
+            // Set the selected date to the first day of the selected month of the current year
+            const firstDayOfMonth = new Date(currentYear, month, 1).getDate();
+            setSelectedDate(firstDayOfMonth);
+
+            // Close the modal
+            setModalVisible(false);
+        }
+
+        // You can add additional logic here to handle the selected month
+    };
+    useEffect(() => {
+        // Get the index of the selected month
+        const monthIndex = monthNames.indexOf(selectedMonth);
+
+        // Get the number of days in the selected month
+        const daysInSelectedMonth = new Date(today.getFullYear(), monthIndex + 1, 0).getDate();
+
+        // Update the state
+        setDaysInMonth(daysInSelectedMonth);
+    }, [selectedMonth]);
+
+    useEffect(() => {
+        const currentDate = new Date();
+        const currentMonth = monthNames[currentDate.getMonth()];
+        setSelectedMonth(currentMonth);
+    }, []);
+
     const today = new Date();
+
 
     const date = new Date();
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -34,8 +78,25 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const mois = monthNames[date.getMonth()];
     console.log(mois); // This will print the current month
 
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    useEffect(() => {
+        const daysinMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+        setDaysInMonth(daysinMonth);
+    }, []);
     const [selectedDate, setSelectedDate] = useState(today.getDate());
+
+    const scrollViewRef = useRef(null);
+
+    useEffect(() => {
+        // @ts-ignore
+        scrollViewRef.current.scrollTo({ x: (today  - 1) * 50 }); // Adjust 50 according to your item width
+    }, [today]);
+
+    useEffect(() => {
+        // Scroll to selected date when it changes
+        scrollViewRef.current.scrollTo({ x: (selectedDate - 1) * 50 }); // Adjust 50 according to your item width
+    }, [selectedDate]);
+
+
 
     // Function to handle selecting a date
     // @ts-ignore
@@ -47,18 +108,28 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     // Get the matching day name for each date
     const dayAbbreviations = dates.map((date) => {
-        // @ts-ignore
-        const currentDate = new Date(today.getFullYear(), today.getMonth(), date);
+        const currentDate = new Date(today.getFullYear(), today.getMonth(), parseInt(date, 10));
         return currentDate.toLocaleDateString('en-US', { weekday: 'short' });
     });
+
+
+    const handlePrevDay = () => {
+        if (selectedDate > 1) {
+            setSelectedDate(selectedDate - 1);
+        }
+    };
+
+    const handleNextDay = () => {
+        if (selectedDate < daysInMonth) {
+            setSelectedDate(selectedDate + 1);
+        }
+    };
 
     const handleliste = () => {
         navigation.navigate('LDH');
     }
 
-    const  handleMonthSelection = () => {
 
-    }
     const fetchSignalCount = async () => {
         const signalCollectionRef = collection(db, "signalData");
         const signalSnapshot = await getDocs(signalCollectionRef);
@@ -176,26 +247,51 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         <View style={styles.header}>
             <View style={styles.headertext}>
                 <Text style={styles.detailsText}>Details Signalements</Text>
-                <Text style={styles.detailsText2}>Mois-{mois}</Text>
-                <TouchableOpacity onPress={handleMonthSelection}>
+                <Text style={styles.detailsText2}>Mois - {selectedMonth}</Text>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
                     <Ionicons name="calendar" size={20} color="#007AFF" />
                 </TouchableOpacity>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(false);
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <FlatList
+                            data={monthNames}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    style={styles.monthItem}
+                                    onPress={() => handleMonthSelection(item)}
+                                >
+                                    <Text>{item}</Text>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.dateRow}>
-                <TouchableOpacity style={styles.chevron}>
+                <TouchableOpacity style={styles.chevron} onPress={handlePrevDay}>
                     <Ionicons name="chevron-back-outline" size={16} color="black" />
                 </TouchableOpacity>
 
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                <ScrollView ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                     <View style={styles.calendar}>
                         {dates.map((date, index) => (
                             <TouchableOpacity
                                 key={date}
                                 style={[
                                     styles.dateContainer,
-                                    selectedDate === date ? styles.selectedDateContainer : null,
+                                    selectedDate === parseInt(date, 10) ? styles.selectedDateContainer : null
                                 ]}
-                                onPress={() => selectDate(date)}
+                                onPress={() => selectDate(parseInt(date, 10))}
                             >
                                 <Text style={styles.dayName}>{dayAbbreviations[index]}</Text>
                                 <Text style={styles.date}>{date}</Text>
@@ -204,7 +300,7 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                     </View>
                 </ScrollView>
 
-                <TouchableOpacity style={styles.chevron}>
+                <TouchableOpacity style={styles.chevron} onPress={handleNextDay}>
                     <Ionicons name="chevron-forward-outline" size={16} color="black" />
                 </TouchableOpacity>
             </View>
@@ -249,20 +345,17 @@ const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject,
     },
-
     statsTitle: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
     },
-
     infoContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 20,
         width: '100%',
     },
-
     infoItem: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -279,26 +372,22 @@ const styles = StyleSheet.create({
         minWidth: '48%',
         maxWidth: '48%',
     },
-
     infoText: {
         fontSize: 12,
         fontWeight: 'bold',
         color: '#000',
         marginBottom: 2,
     },
-
     textContainer: {
         flex: 1,
         justifyContent: 'center',
         marginLeft: 5,
     },
-
     infoNumber: {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'left',
     },
-
     infoImage: {
         width: 47,
         height: 40,
@@ -354,48 +443,16 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         color: '#000',
-        alignSelf: 'center', // Vertically center the text
+        alignSelf: 'center',
         marginBottom: 16,
-        marginLeft: 50,
+        marginLeft: 40,
+        marginRight: 4,
     },
-    /*dateRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-        marginBottom: 16,
-    },
-    chevron: {
-        padding: 8,
-    },*/
     scrollViewContent: {
         justifyContent: 'center',
         alignItems: 'center',
         height: 57,
     },
-    /*dateContainer: {
-        backgroundColor: '#007AFF',
-        borderRadius: 20,
-        paddingVertical: 12,
-        paddingHorizontal: 12,
-        marginHorizontal: 3,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    selectedDateContainer: {
-        backgroundColor: '#0d477a', // Highlight color for the selected date
-    },
-    day: {
-        fontSize: 14,
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    date: {
-        fontSize: 14,
-        color: '#fff',
-        fontWeight: 'bold',
-    },*/
-
-
     dateRow: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -431,13 +488,37 @@ const styles = StyleSheet.create({
     calendar: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginTop: 16,
+        marginTop: 5,
     },
     dayName: {
         fontSize: 12,
         color: '#fff',
         fontWeight: 'bold',
         marginTop: 4,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        width: 300, // Set a fixed width for the modal content
+        elevation: 5,
+    },
+    monthItem: {
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        alignItems: 'center',
+    },
+    monthItemText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
     },
 });
 
