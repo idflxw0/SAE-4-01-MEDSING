@@ -29,6 +29,7 @@ const ClearableTextInput: FC<ClearableTextInputProps> = memo(({ value, onChangeT
                 onChangeText={onChangeText}
                 value={value}
                 placeholder={placeholder}
+                placeholderTextColor="#9CA3AF" // Set a contrasting placeholder text color
                 secureTextEntry={secureTextEntry}
                 keyboardType={keyboardType}
             />
@@ -40,6 +41,7 @@ const ClearableTextInput: FC<ClearableTextInputProps> = memo(({ value, onChangeT
         </View>
     );
 });
+
 
 //@ts-ignore
 const ModifProfile = ({ navigation }) => {
@@ -157,17 +159,19 @@ const ModifProfile = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <LinearGradient
-                // Background Linear Gradient
                 colors={['#B7FFB1', '#FFE500']}
                 style={styles.background}
             />
+            <View style={styles.header}>
+                <Header title={'Votre compte'} navigation={navigation} />
+
+            </View>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.container}
             >
                 <ScrollView>
                     <View style={styles.headerTitle}>
-                        <Header title={'Votre compte'} navigation={navigation} />
                     </View>
                     <View style={styles.profileSection}>
                         <Image
@@ -215,7 +219,8 @@ const ModifProfile = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
+        justifyContent: 'flex-start',
     },
     background: {
         width: '100%',     // Set width to the screen width
@@ -223,6 +228,9 @@ const styles = StyleSheet.create({
         position: 'absolute', // Use absolute positioning to overlay
         top: 0,
         left: 0
+    },
+    header : {
+        marginTop: '10%',
     },
     inputContainer: {
         flexDirection: 'row',
@@ -284,13 +292,11 @@ const styles = StyleSheet.create({
     },
     editPhotoText: {
         color: 'blue',
+        fontWeight: 'bold',
         marginTop: 4,
     },
     infoSection: {
-        // backgroundColor: 'white',
-        padding: 20,
-        // borderTopWidth: 1,
-        // borderColor: '#cccccc',
+        padding: 15,
     },
     infoItem: {
         flexDirection: 'row',
