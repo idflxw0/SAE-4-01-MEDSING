@@ -93,7 +93,10 @@ const SettingsScreen = ({ navigation}) => {
                 <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
             <Text style={styles.heading}>Settings</Text>
-            {/* Add your settings options here */}
+            <TouchableOpacity onPress={() => handleNavigateToScreen('ModifyProfile')} style={styles.option}>
+                <Text style={styles.optionText}>Modifier votre profile</Text>
+                <Ionicons name="chevron-forward" size={16} color="black" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToScreen('Language')} style={styles.option}>
                 <Text style={styles.optionText}>Language</Text>
                 <Ionicons name="chevron-forward" size={16} color="black" />
