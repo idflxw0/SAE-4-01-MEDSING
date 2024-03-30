@@ -26,7 +26,6 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(null);
 
     const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
-    /*const dates = ['01', '02', '03', '04', '05', '06', '07'];*/
     const today = new Date().getDate();
 
     // Generate dates array based on the number of days in the month
@@ -171,55 +170,27 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                     <Ionicons name="calendar" size={20} color="#007AFF" />
                 </TouchableOpacity>
             </View>
-            {/*<View style={styles.dateRow}>
-                <TouchableOpacity style={styles.chevron}>
-                    <Ionicons name="chevron-back-outline" size={16} color="black" />
-                </TouchableOpacity>
-
-                <ScrollView
-                    horizontal = {true}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollViewContent}
-                >
-                    {days.map((day, index) => (
-                        <TouchableOpacity
-                            key={day}
-                            style={[
-                                styles.dateContainer,
-                                selectedDate === dates[index] ? styles.selectedDateContainer : null,
-                            ]}
-                            onPress={() => selectDate(dates[index])}
-                        >
-                            <Text style={styles.day}>{day}</Text>
-                            <Text style={styles.date}>{dates[index]}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-
-                <TouchableOpacity style={styles.chevron}>
-                    <Ionicons name="chevron-forward-outline" size={16} color="black" />
-                </TouchableOpacity>
-            </View>*/}
             <View style={styles.dateRow}>
                 <TouchableOpacity style={styles.chevron}>
                     <Ionicons name="chevron-back-outline" size={16} color="black" />
                 </TouchableOpacity>
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    {days.map((day, index) => (
-                        <TouchableOpacity
-                            key={day}
-                            style={[
-                                styles.dateContainer,
-                                selectedDate === dates[index] ? styles.selectedDateContainer : null,
-                                today === index + 1 ? styles.todayContainer : null, // Highlight today's date
-                            ]}
-                            onPress={() => selectDate(dates[index])}
-                        >
-                            <Text style={styles.day}>{day}</Text>
-                            <Text style={styles.date}>{dates[index]}</Text>
-                        </TouchableOpacity>
-                    ))}
+                    <View style={styles.calendar}>
+                        {dates.map((date, index) => (
+                            <TouchableOpacity
+                                key={date}
+                                style={[
+                                    styles.dateContainer,
+                                    selectedDate === date ? styles.selectedDateContainer : null,
+                                    today === date ? styles.todayContainer : null, // Highlight today's date
+                                ]}
+                                onPress={() => selectDate(date)}
+                            >
+                                <Text style={styles.date}>{date}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </ScrollView>
 
                 <TouchableOpacity style={styles.chevron}>
@@ -417,6 +388,7 @@ const styles = StyleSheet.create({
     dateRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 16,
     },
     chevron: {
         padding: 8,
@@ -444,6 +416,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#fff',
         fontWeight: 'bold',
+    },
+    calendar: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 16,
     },
 });
 
