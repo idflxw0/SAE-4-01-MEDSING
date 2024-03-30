@@ -18,14 +18,14 @@ const ResetConfirmation = ({route,navigation}) => {
                 style={styles.imageStyle}
             />
             <Text style={styles.heading}>
-                Your email is on the way
+                Votre email est en route
             </Text>
             <Text style = {styles.subtitle}>
-                Check your email {''}
+                Vérifiez votre courrier électronique {''}
                 <Text style = {styles.emailText}>
                     {email}
                 </Text>
-                <Text> and follow the instructions to reset your password </Text>
+                <Text> et suivez les instructions pour réinitialiser votre mot de passe </Text>
             </Text>
             <TouchableOpacity style={styles.bottomContainer}>
                 <CustomButton buttonText={"Back to Log In"}  onPress={handleGoBack}/>
@@ -72,12 +72,12 @@ const styles = StyleSheet.create({
         left : 20,
         bottom: 20,
         width: '100%',
-        alignItems: 'center', // Center the button horizontally
+        alignItems: 'center',
     },
     emailText : {
         fontWeight: 'bold',
         textDecorationLine: 'underline',
-        color: '#EBFE69',
+        color: '#000',
     }
 })
 export default ResetConfirmation;

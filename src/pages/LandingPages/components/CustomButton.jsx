@@ -6,7 +6,7 @@ const CustomButton = ({buttonText,onPress}) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <LinearGradient
-                colors={['#87CEEB','#fc466b']}
+                colors={['#87CEEB','#2ccff4']}
                 style={styles.ButtonContainer}
             >
                 <Text style={styles.ButtonText}>{buttonText}</Text>

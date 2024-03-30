@@ -64,7 +64,7 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
         setTorch((prevTorch) => !prevTorch);
     };
 
-    const extractCIPCode = (scannedData) => {
+    const extractCIPCode = (scannedData: string) => {
         return scannedData.substring(4,17);
     }
 
@@ -75,7 +75,7 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
             activateCamera();
         }
     }
-    const handleBarCodeScanned = ({ type, data }) => {
+    const handleBarCodeScanned = ({data }) => {
         if (!scanned) {
             const cipCode = extractCIPCode(data);
             const product = productList.find(p => String(p.CIP) === String(cipCode));
@@ -99,7 +99,6 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
                     { cancelable: false }
                 );
             }
-
             setScan(true); // Setting scanned state to true to prevent re-scanning until the alert is dismissed
         }
     };

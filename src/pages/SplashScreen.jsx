@@ -7,13 +7,15 @@ import { auth } from "../config/firebase";
 const SplashScreen = ({ navigation }) => {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                console.log("User is logged in, navigating to main screen");
-                navigation.replace('HomeScreen');
-            } else {
-                console.log("No user session, navigating to login screen");
-                navigation.replace('Landing');
-            }
+            setTimeout(() => {
+                if (user) {
+                    console.log("User is logged in, navigating to main screen");
+                    navigation.replace('HomeScreen');
+                } else {
+                    console.log("No user session, navigating to login screen");
+                    navigation.replace('Landing');
+                }
+            }, 2000);
         });
 
         // Unsubscribe from the listener when the component unmounts

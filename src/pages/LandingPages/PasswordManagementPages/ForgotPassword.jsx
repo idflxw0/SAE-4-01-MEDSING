@@ -1,12 +1,19 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity} from "react-native";
+import {StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity,Alert} from "react-native";
 import Header from '../../../../Components/Header';
 import {LinearGradient} from "expo-linear-gradient";
+import {auth} from "../../../config/firebase";
+import {sendPasswordResetEmail } from "firebase/auth";
 
 const ForgotPassword = ({navigation}) => {
     const [email, setEmail] = useState('');
     const handleContinue = () => {
-        navigation.navigate('ResetConfirmation', { email: email });
+        sendPasswordResetEmail(auth,email).then(() => {
+            navigation.navigate('ResetConfirmation', { email: email });
+        })
+            .catch((error) => {
+                Alert.alert('Error', error);
+            })
     }
     return (
         <View style={styles.container}>
@@ -14,13 +21,13 @@ const ForgotPassword = ({navigation}) => {
                 colors={['#B7FFB1', '#FFE500']}
                 style={styles.background}
             />
-            <Header title={"Forgot password"} navigation={navigation}></Header>
+            <Header title={"Mot de passe oublié"} navigation={navigation}></Header>
             <View>
                 <Text style={styles.text}>
-                    Don't worry.
+                    Ne vous inquiétez pas.
                 </Text>
                 <Text style = {styles.text}>
-                    Enter your email and we'll send you a link to reset your password.
+                    Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
                 </Text>
             </View>
             <View style={styles.inputContainer}>
@@ -64,7 +71,7 @@ const styles = StyleSheet.create({
         borderColor: '#90909F',
         borderWidth: 2,
         borderRadius: 16,
-        color: '#fff',
+        color: '#000',
         paddingHorizontal: 15,
         paddingVertical: 15,
         marginTop : 15,
