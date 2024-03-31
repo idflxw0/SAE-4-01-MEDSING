@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useHistoryData from "../../hook/useHistoryData";
 import {auth, db} from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
+
+//@ts-ignore
 const History = ({ navigation,route }) => {
     const [historyData, setHistoryData] = useState([]);
     useEffect(() => {

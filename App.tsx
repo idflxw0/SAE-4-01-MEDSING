@@ -47,19 +47,21 @@ export default function App() {
     const [initializing, setInitializing] = React.useState(true);
     const [user, setUser] = React.useState(null);
 
-    function onAuthStateChanged(user) {
+    function onAuthStateChanged(user: React.SetStateAction<null>) {
         setUser(user);
         if (initializing) setInitializing(false);
     }
 
     useEffect(() => {
+        //@ts-ignore
         const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
         return subscriber;
     }, []);
     if (initializing) return null;
+
     return (
       <NavigationContainer>
-          <Stack.Navigator initialRouteName="SplashScreen" options={{ headerShown: false }}>
+          <Stack.Navigator initialRouteName="SignUp">
 
               <Stack.Screen name="Landing" component={OnboardingScreen} options={{ headerShown: false }}/>
               <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>

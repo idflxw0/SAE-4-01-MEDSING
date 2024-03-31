@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+// import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 const OnboardingScreen = ({ navigation }) => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -67,7 +67,7 @@ const OnboardingScreen = ({ navigation }) => {
                 colors={['#B7FFB1', '#FFE500']}
                 style={styles.background}
             />
-            <View style={styles.carouselContainer}>
+           {/* <View style={styles.carouselContainer}>
                 <Carousel
                     ref={carouselRef}
                     data={carouselItems}
@@ -87,7 +87,7 @@ const OnboardingScreen = ({ navigation }) => {
                 inactiveDotStyle={styles.inactivePaginationDot}
                 inactiveDotOpacity={0.4}
                 inactiveDotScale={0.6}
-            />
+            />*/}
             <View style={styles.footer}>
                 <Animated.View style={[styles.buttonContainer, { transform: [{ scale: buttonScale }] }]}>
                     <TouchableOpacity

@@ -5,6 +5,7 @@ import { Entypo } from '@expo/vector-icons';
 import productList from '../data/data.json';
 
 
+// @ts-ignore
 const DataMatrixScanner = ({onCipCodeScanned}) => {
     const [cameraActive, setCameraActive] = useState(false);
     const [enableTorch, setTorch] = useState(false);
@@ -33,6 +34,7 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
             }
             lastTapRef.current = null;
         } else {
+            // @ts-ignore
             lastTapRef.current = now;
             if (!cameraActive) {
                 if (!permission?.granted) {
@@ -54,6 +56,7 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
         if (timerRef.current) {
             clearTimeout(timerRef.current);
         }
+        // @ts-ignore
         timerRef.current = setTimeout(() => {
             setCameraActive(false);
             Alert.alert("Time's up", "No DataMatrix code detected in 2 minutes. Camera deactivated.");
@@ -75,7 +78,8 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
             activateCamera();
         }
     }
-    const handleBarCodeScanned = ({data }) => {
+    // @ts-ignore
+    const handleBarCodeScanned = ({data}) => {
         if (!scanned) {
             const cipCode = extractCIPCode(data);
             const product = productList.find(p => String(p.CIP) === String(cipCode));

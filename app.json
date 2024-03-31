@@ -1,34 +1,42 @@
 {
   "expo": {
-    "name": "medsing",
-    "slug": "medsing",
+    "name": "Medsing",
+    "slug": "Medsing",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
-    "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow Medsing to access your camera."
-        }
-      ],
-      [
-        "@react-native-google-signin/google-signin"
-      ]
-    ],
+    "ios": {
+      "supportsTablet": true
+    },
     "android": {
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
-      ],
-      "googleServicesFile": "./google-services.json",
-      "package": "com.thefl0w.medsing"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.thefl0w.Medsing"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "0d785ab5-78ab-45ed-b46e-696699faedbb"
+        "projectId": "02ac09c9-b7d9-47ae-bdd1-642d90666abd"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/02ac09c9-b7d9-47ae-bdd1-642d90666abd"
     }
   }
 }

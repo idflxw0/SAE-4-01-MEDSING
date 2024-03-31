@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Button, Animated, Easing } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 
+// @ts-ignore
 const ConfirmationPage = ({navigation}) => {
     const logo1TranslateY = new Animated.Value(-500);
     const logo2TranslateY = new Animated.Value(-500);
