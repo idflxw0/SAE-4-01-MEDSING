@@ -1,4 +1,4 @@
-package com.medsing
+package com.thefl0w.medsing
 
 import android.app.Application
 import android.content.res.Configuration

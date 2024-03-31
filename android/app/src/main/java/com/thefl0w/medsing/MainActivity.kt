@@ -1,4 +1,4 @@
-package com.medsing
+package com.thefl0w.medsing
 
 import android.os.Build
 import android.os.Bundle
