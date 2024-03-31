@@ -12,7 +12,23 @@
         {
           "cameraPermission": "Allow Medsing to access your camera."
         }
+      ],
+      [
+        "@react-native-google-signin/google-signin"
       ]
-    ]
+    ],
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "googleServicesFile": "./google-services.json",
+      "package": "com.thefl0w.medsing"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0d785ab5-78ab-45ed-b46e-696699faedbb"
+      }
+    }
   }
 }
