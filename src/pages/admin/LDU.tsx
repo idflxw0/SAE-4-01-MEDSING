@@ -14,7 +14,6 @@ const UsersPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const[isSortedByAlpha, setIsSortedByAlpha] = useState(false);
     const [usersCount, setUsersCount] = useState<number>(0);
 
-
     const handleFilterByAlph = () => {
         if (!isSortedByAlpha) {
             const sortedHistory = [...historyData].sort((a, b) => a.name.localeCompare(b.name));
@@ -35,44 +34,38 @@ const UsersPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     };
 
     const fetchUsersData = async () => {
-        const usersCollectionRef = collection(db, "users");
-        const usersSnapshot = await getDocs(usersCollectionRef);
+        // First, fetch the users to get their names
+        const usersRef = collection(db, "users");
+        const usersSnapshot = await getDocs(usersRef);
 
-        const usersData = usersSnapshot.docs.map((doc) => doc.data());
+        // Process each user to find their medication count
+        const usersMedsCountPromises = usersSnapshot.docs.map(async (userDoc) => {
+            const userId = userDoc.id;
+            const userName = userDoc.data().name;
 
-        const medsNameToCIPMap = medsData.reduce((map, med) => {
-            map[med.Name] = med.CIP;
-            return map;
-        }, {});
+            // Now, find the corresponding userData document by userId
+            const userDataDocRef = doc(db, "userData", userId);
+            const userDataDocSnap = await getDoc(userDataDocRef);
 
-        const medsCountMap = {};
-        usersData.forEach((user) => {
-            if (user.history) {
-                user.history.forEach((entry) => {
-                    const cip = medsNameToCIPMap[entry.name];
-                    if (cip) {
-                        medsCountMap[cip] = (medsCountMap[cip] || 0) + 1;
-                    }
-                });
-            }
+            // Extract the user's medication history and count the entries
+            const userHistory = userDataDocSnap.exists() ? userDataDocSnap.data().history || [] : [];
+            const medsCount = userHistory.length;
+
+            // Return an object containing the user's name and their med count
+            return { name: userName, count: medsCount };
         });
 
-        const medsCountArray = Object.entries(medsCountMap).map(([cip, count]) => {
-            const cipAsString = String(cip);
-            const medName = medsData.find((med) => String(med.CIP) === cipAsString)?.Name || '';
-            return {
-                cipCode: cip,
-                name: medName,
-                count: count,
-            };
+        Promise.all(usersMedsCountPromises).then(usersMedsCounts => {
+            setHistoryData(usersMedsCounts);
         });
-        setHistoryData(medsCountArray);
     };
 
     useEffect(() => {
         fetchUsersData();
     }, []);
 
+
+    console.log(historyData)
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -98,11 +91,10 @@ const UsersPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 <Text style={styles.headerItem}>Nombres</Text>
             </View>
             <ScrollView style={styles.historyScrollView}>
-                {historyData.map((entry, index) => (
+                {historyData.map((userMedsCount, index) => (
                     <View key={index} style={styles.historyEntry}>
-                        <Text style={{marginLeft:'-5%', ...styles.historyItem}}>{entry.cipCode}</Text>
-                        <Text style={{marginRight:'-10%', ...styles.historyItem}}>{entry.name}</Text>
-                        <Text style={{ right : -20, ...styles.historyItem}}>{entry.count}</Text>
+                        <Text style={styles.historyItem}>{userMedsCount.name}</Text>
+                        <Text style={{ right : -20, ...styles.historyItem}}>{userMedsCount.count}</Text>
                     </View>
                 ))}
             </ScrollView>
