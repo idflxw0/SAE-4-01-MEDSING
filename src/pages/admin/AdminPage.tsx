@@ -14,130 +14,22 @@ import DropDownPicker from 'react-native-dropdown-picker';
 const megaphone = require('../../../assets/megaphone.1024x886.png');
 const people = require('../../../assets/people.1024x825.png');
 const list = require('../../../assets/cv.863x1024.png');
+const people2 = require('../../../assets/persons.1024x924.png');
 const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
-
-
-    const [medsCountByCIP, setMedsCountByCIP] = useState<{ [key: string]: number }>({});
 
     const [usersCount, setUsersCount] = useState<number>(0);
     const [signalCount, setSignalCount] = useState<number>(0);
-    const screenWidth = Dimensions.get('window').width;
-    const [month, setMonth] = useState('janvier');
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedMonth, setSelectedMonth] = useState('');
-    const [daysInMonth, setDaysInMonth] = useState(0);
-    // const days = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
-
-    const handleMonthSelection = (month) => {
-        // Set the selected month
-        setSelectedMonth(month);
-        const currentDate = new Date();
-        const currentMonth = monthNames[currentDate.getMonth()];
-        // Get the current year
-        const currentYear = new Date().getFullYear();
-        if (month === currentMonth) {
-            setSelectedDate(currentDate.getDate());
-            // Close the modal
-            setModalVisible(false);
-        }
-        else {
-            // Set the selected date to the first day of the selected month of the current year
-            const firstDayOfMonth = new Date(currentYear, month, 1).getDate();
-            setSelectedDate(firstDayOfMonth);
-
-            // Close the modal
-            setModalVisible(false);
-        }
-
-        // You can add additional logic here to handle the selected month
-    };
-    useEffect(() => {
-        // Get the index of the selected month
-        const monthIndex = monthNames.indexOf(selectedMonth);
-
-        // Get the number of days in the selected month
-        const daysInSelectedMonth = new Date(today.getFullYear(), monthIndex + 1, 0).getDate();
-
-        // Update the state
-        setDaysInMonth(daysInSelectedMonth);
-    }, [selectedMonth]);
-
-    useEffect(() => {
-        const currentDate = new Date();
-        const currentMonth = monthNames[currentDate.getMonth()];
-        setSelectedMonth(currentMonth);
-    }, []);
-
-    const today = new Date();
-
-
-    const date = new Date();
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    const mois = monthNames[date.getMonth()];
-    console.log(mois); // This will print the current month
-
-    useEffect(() => {
-        const daysinMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-        setDaysInMonth(daysinMonth);
-    }, []);
-    const [selectedDate, setSelectedDate] = useState(today.getDate());
-
-    const scrollViewRef = useRef(null);
-
-    useEffect(() => {
-        // @ts-ignore
-        scrollViewRef.current.scrollTo({ x: (today  - 1) * 50 }); // Adjust 50 according to your item width
-    }, [today]);
-
-    useEffect(() => {
-        // Scroll to selected date when it changes
-        scrollViewRef.current.scrollTo({ x: (selectedDate - 1) * 50 }); // Adjust 50 according to your item width
-    }, [selectedDate]);
 
 
 
-    // Function to handle selecting a date
-    // @ts-ignore
-    const selectDate = (date) => {
-        setSelectedDate(date);
-        // Add your logic here when a date is selected
-    };
-    const dates = Array.from({ length: daysInMonth }, (_, i) => String(i + 1).padStart(2, '0')); // Pad single digits with leading zeros
-
-    // Get the matching day name for each date
-    const dayAbbreviations = dates.map((date) => {
-        const currentDate = new Date(today.getFullYear(), today.getMonth(), parseInt(date, 10));
-        return currentDate.toLocaleDateString('en-US', { weekday: 'short' });
-    });
-
-
-    const handlePrevDay = () => {
-        if (selectedDate > 1) {
-            setSelectedDate(selectedDate - 1);
-        }
-    };
-
-    const handleNextDay = () => {
-        if (selectedDate < daysInMonth) {
-            setSelectedDate(selectedDate + 1);
-        }
-    };
-
-    const handleliste = () => {
-        navigation.navigate('LDH');
+    const handlelisteS = () => {
+        navigation.navigate('LDS');
     }
 
-
-    const fetchSignalCount = async () => {
-        const signalCollectionRef = collection(db, "signalData");
-        const signalSnapshot = await getDocs(signalCollectionRef);
-        setSignalCount(signalSnapshot.size);
-
+    const handlelisteU = () => {
+        navigation.navigate('LDU');
     }
-    signalCount === 0 && fetchSignalCount()
-    console.log("signal " + signalCount);
+
     const fetchUsersCount = async () => {
         const usersCollectionRef = collection(db, "userData");
         const usersSnapshot = await getDocs(usersCollectionRef);
@@ -147,77 +39,6 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     usersCount === 0 && fetchUsersCount()
     console.log("users " + usersCount);
 
-
-    useEffect(() => {
-        const fetchUsersData = async () => {
-            const usersCollectionRef = collection(db, "userData");
-            const usersSnapshot = await getDocs(usersCollectionRef);
-
-            const usersData = usersSnapshot.docs.map(doc => doc.data());
-
-            const medsNameToCIPMap = medsData.reduce((map, med) => {
-                map[med.Name] = med.CIP;
-                return map;
-            }, {});
-
-            const medsCountMap: { [key: string]: number } = {};
-            usersData.forEach(user => {
-                if (user.history) {
-                    user.history.forEach(entry => {
-                        const cip = medsNameToCIPMap[entry.name];
-                        if (cip) {
-                            if (medsCountMap[cip]) {
-                                medsCountMap[cip]++;
-                            } else {
-                                medsCountMap[cip] = 1;
-                            }
-                        }
-                    });
-                }
-            });
-            setMedsCountByCIP(medsCountMap);
-        };
-        fetchUsersData();
-    }, []);
-
-    const formatCIP = (cip: string) => {
-        return '...' + cip.substr(cip.length - 9);
-    };
-    // const selectDate = (date) => {
-    //     setSelectedDate(date);
-    // };
-    const calculateChartWidth = (dataLength: number) => {
-        const baseWidth = screenWidth - 40; // Base width for a single item
-        const itemWidth = 80; // Desired width per item in the chart
-        return dataLength * itemWidth > baseWidth ? dataLength * itemWidth : baseWidth;
-    };
-
-    const chartData = {
-        labels: Object.keys(medsCountByCIP).map(cip => formatCIP(cip)),
-        datasets: [
-            {
-                data: Object.values(medsCountByCIP),
-            },
-        ],
-    };
-    
-    const dynamicChartWidth = calculateChartWidth(Object.keys(medsCountByCIP).length);
-    const chartConfig = {
-        backgroundColor: '#ffffff',
-        backgroundGradientFrom: '#ffffff',
-        backgroundGradientTo: '#ffffff',
-        decimalPlaces: 0, // ne pas afficher les décimales
-        color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        style: {
-            borderRadius: 16
-        },
-        propsForDots: {
-            r: '6',
-            strokeWidth: '2',
-            stroke: '#ffa726'
-        }
-    };
 
     return (
     <View style={styles.container}>
@@ -243,86 +64,14 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </View>
             </View>
         </View>
-
-        <View style={styles.header}>
-            <View style={styles.headertext}>
-                <Text style={styles.detailsText}>Details Signalements</Text>
-                <Text style={styles.detailsText2}>Mois - {selectedMonth}</Text>
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Ionicons name="calendar" size={20} color="#007AFF" />
-                </TouchableOpacity>
-            </View>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(false);
-                }}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <FlatList
-                            data={monthNames}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    style={styles.monthItem}
-                                    onPress={() => handleMonthSelection(item)}
-                                >
-                                    <Text>{item}</Text>
-                                </TouchableOpacity>
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
-                    </View>
-                </View>
-            </Modal>
-            <View style={styles.dateRow}>
-                <TouchableOpacity style={styles.chevron} onPress={handlePrevDay}>
-                    <Ionicons name="chevron-back-outline" size={16} color="black" />
-                </TouchableOpacity>
-
-                <ScrollView ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <View style={styles.calendar}>
-                        {dates.map((date, index) => (
-                            <TouchableOpacity
-                                key={date}
-                                style={[
-                                    styles.dateContainer,
-                                    selectedDate === parseInt(date, 10) ? styles.selectedDateContainer : null
-                                ]}
-                                onPress={() => selectDate(parseInt(date, 10))}
-                            >
-                                <Text style={styles.dayName}>{dayAbbreviations[index]}</Text>
-                                <Text style={styles.date}>{date}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </ScrollView>
-
-                <TouchableOpacity style={styles.chevron} onPress={handleNextDay}>
-                    <Ionicons name="chevron-forward-outline" size={16} color="black" />
-                </TouchableOpacity>
-            </View>
-        </View>
-
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
-            <BarChart
-                data={chartData}
-                width={dynamicChartWidth}
-                height={300}
-                chartConfig={chartConfig}
-                fromZero={true}
-                withInnerLines={true}
-                showBarTops={true}
-                yAxisLabel=""
-                yAxisSuffix=""
-                verticalLabelRotation={30}
-            />
-        </ScrollView>
-        <TouchableOpacity onPress={() => handleliste()} style={styles.option}>
+        <TouchableOpacity onPress={() => handlelisteS()} style={[styles.option, styles.option2]}>
             <Image source={list} style={styles.imgOption} />
-            <Text style={styles.optionText}>Liste signalement</Text>
+            <Text style={styles.optionText}>Liste des signalements</Text>
+            <Ionicons name="chevron-forward" size={16} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlelisteU()} style={styles.option}>
+            <Image source={people2} style={styles.imgOption2} />
+            <Text style={styles.optionText}>Liste des utilisateurs</Text>
             <Ionicons name="chevron-forward" size={16} color="black" />
         </TouchableOpacity>
 
@@ -339,16 +88,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         width: '100%',
     },
-    chart: {
-        flex: 1
-    },
     background: {
         ...StyleSheet.absoluteFillObject,
-    },
-    statsTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
     },
     infoContainer: {
         flexDirection: 'row',
@@ -401,9 +142,12 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
         borderWidth: 1,
         borderRadius: 5,
-        marginBottom: 100,
+        marginBottom: 30,
         paddingHorizontal: 10,
         justifyContent: 'space-between',
+    },
+    option2: {
+        marginTop: 50,
     },
     optionText: {
         flex: 1,
@@ -417,108 +161,11 @@ const styles = StyleSheet.create({
         marginRight: "3%",
         marginLeft: "3%",
     },
-    header: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#F0F4F7',
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        borderTopLeftRadius: 20,
-        borderTopEndRadius: 20,
-        height: 125,
-    },
-    headertext: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    detailsText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#000',
-        alignSelf: 'center', // Vertically center the text
-        marginBottom: 16,
-    },
-    detailsText2: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#000',
-        alignSelf: 'center',
-        marginBottom: 16,
-        marginLeft: 40,
-        marginRight: 4,
-    },
-    scrollViewContent: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 57,
-    },
-    dateRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    chevron: {
-        padding: 8,
-    },
-    dateContainer: {
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        marginHorizontal: 4,
-        borderRadius: 10,
-        backgroundColor: '#007AFF',
-        alignItems: 'center',
-    },
-    selectedDateContainer: {
-        backgroundColor: 'darkblue', // Highlight color for the selected date
-    },
-    todayContainer: {
-        backgroundColor: 'red', // Highlight color for today's date
-    },
-    day: {
-        fontSize: 14,
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    date: {
-        fontSize: 14,
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    calendar: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginTop: 5,
-    },
-    dayName: {
-        fontSize: 12,
-        color: '#fff',
-        fontWeight: 'bold',
-        marginTop: 4,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
-        width: 300, // Set a fixed width for the modal content
-        elevation: 5,
-    },
-    monthItem: {
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        alignItems: 'center',
-    },
-    monthItemText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
+    imgOption2: {
+        width: "15%",
+        height: "70%",
+        marginRight: "3%",
+        marginLeft: "3%",
     },
 });
 
