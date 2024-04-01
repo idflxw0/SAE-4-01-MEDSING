@@ -42,6 +42,7 @@ const UsersPage: React.FC<{ navigation: any }> = ({ navigation }) => {
         const usersMedsCountPromises = usersSnapshot.docs.map(async (userDoc) => {
             const userId = userDoc.id;
             const userName = userDoc.data().name;
+            const userPfp = userDoc.data().profilePicture || null;
 
             // Now, find the corresponding userData document by userId
             const userDataDocRef = doc(db, "userData", userId);
@@ -52,7 +53,7 @@ const UsersPage: React.FC<{ navigation: any }> = ({ navigation }) => {
             const medsCount = userHistory.length;
 
             // Return an object containing the user's name and their med count
-            return { name: userName, count: medsCount };
+            return { name: userName, count: medsCount, pfp: userPfp };
         });
 
         Promise.all(usersMedsCountPromises).then(usersMedsCounts => {
@@ -86,14 +87,15 @@ const UsersPage: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.historyHeader}>
-                <Text style={styles.headerItem}>Nom</Text>
-                <Text style={{marginRight:'8%',...styles.headerItem}}></Text>
+                <Text style={styles.headerItem}>Photo de profile</Text>
+                <Text style={{marginRight:'8%',...styles.headerItem}}>Nom</Text>
                 <Text style={styles.headerItem}>Nombres</Text>
             </View>
             <ScrollView style={styles.historyScrollView}>
                 {historyData.map((userMedsCount, index) => (
                     <View key={index} style={styles.historyEntry}>
-                        <Text style={styles.historyItem}>{userMedsCount.name}</Text>
+                        <Image source={{uri: userMedsCount.pfp}} style={{width: 50, height: 50, borderRadius: 50, marginRight: 10}}/>
+                        <Text style={{right: -20, ...styles.historyItem}}>{userMedsCount.name}</Text>
                         <Text style={{ right : -20, ...styles.historyItem}}>{userMedsCount.count}</Text>
                     </View>
                 ))}
