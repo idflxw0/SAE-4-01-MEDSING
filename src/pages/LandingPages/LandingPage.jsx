@@ -1,65 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Animated, Easing, StatusBar, FlatList} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import OnboardingItem from "./components/OnboardingItem";
+import slides from "../../../slides";
+import Paginator from "./components/Paginator";
 // import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 const OnboardingScreen = ({ navigation }) => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const carouselRef = useRef(null);
-    const buttonScale = useRef(new Animated.Value(1)).current;
+    const [index, setCurrentIndex] = useState(0);
+    const scrollX = useRef(new Animated.Value(0)).current; // Use useRef here for consistent reference
+    const slidesRef = useRef(null);
+
+    const viewableItemChanged = useRef(({ viewableItems }) => {
+        setCurrentIndex(viewableItems[0].index);
+    }).current;
+
+    const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
 
     const handleSignUpPress = () => {
-        animateButton();
         navigation.navigate('SignUp');
     };
 
     const handleLogInPress = () => {
-        animateButton();
         navigation.navigate('SignIn');
     };
-
-    const animateButton = () => {
-        Animated.sequence([
-            Animated.timing(buttonScale, {
-                toValue: 0.9,
-                duration: 50,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            }),
-            Animated.timing(buttonScale, {
-                toValue: 1,
-                duration: 50,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            }),
-        ]).start();
-    };
-
-    const carouselItems = [
-        { title: 'Bienvenue sur MedSing !'},
-        { title: 'Signaler des médicaments', paragraph: 'Saissisez le code CIP du médicament à signaler qui susciste des difficultés de renouvellement ' },
-        { title: 'Observer votre historique', paragraph: 'Vous pouvez suivre tous vos signalements depuis la page Historique' },
-        { title: 'Scanner vos médicaments', paragraph: 'Utilisez votre caméra pour signaler vos médicaments à l’aide du DataMatrix, plutôt que de saisir le code CIP' },
-    ];
-
-    const renderCarouselItem = ({ item, index }) => {
-        return (
-            <View style={styles.carouselItem}>
-                <Text style={styles.carouselTitle}>{item.title}</Text>
-                <Text style={styles.carouselParagraph}>{item.paragraph}</Text>
-            </View>
-        );
-    };
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (carouselRef.current) {
-                carouselRef.current.snapToNext();
-            }
-        }, 3000);
-
-        return () => clearInterval(interval);
-    }, []);
 
     return (
         <View style={styles.container}>
@@ -67,44 +32,42 @@ const OnboardingScreen = ({ navigation }) => {
                 colors={['#B7FFB1', '#FFE500']}
                 style={styles.background}
             />
-           {/* <View style={styles.carouselContainer}>
-                <Carousel
-                    ref={carouselRef}
-                    data={carouselItems}
-                    renderItem={renderCarouselItem}
-                    sliderWidth={300}
-                    itemWidth={300}
-                    layout={'default'}
-                    loop={true}
-                    onSnapToItem={(index) => setActiveIndex(index)}
+            <StatusBar backgroundColor="#554F59" barStyle="light-content" />
+            <View style={{ flex: 3, marginBottom: '35%' }}>
+                <FlatList
+                    data={slides}
+                    renderItem={({ item,index}) => <OnboardingItem item={item}  isFirst={index === 0}/>}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    pagingEnabled
+                    bounces={false}
+                    keyExtractor={(item) => item.id}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                        { useNativeDriver: false }
+                    )}
+                    scrollEventThrottle={32}
+                    onViewableItemsChanged={viewableItemChanged}
+                    viewabilityConfig={viewConfig}
+                    ref={slidesRef}
+                    style={{ position: 'relative' }}
                 />
             </View>
-            <Pagination
-                dotsLength={carouselItems.length}
-                activeDotIndex={activeIndex}
-                containerStyle={styles.paginationContainer}
-                dotStyle={styles.paginationDot}
-                inactiveDotStyle={styles.inactivePaginationDot}
-                inactiveDotOpacity={0.4}
-                inactiveDotScale={0.6}
-            />*/}
-            <View style={styles.footer}>
-                <Animated.View style={[styles.buttonContainer, { transform: [{ scale: buttonScale }] }]}>
-                    <TouchableOpacity
-                        style={styles.signUpButton}
-                        onPress={handleSignUpPress}
-                    >
-                        <Text style={styles.signUpButtonText}>Sign Up</Text>
-                    </TouchableOpacity>
-                </Animated.View>
-                <Animated.View style={[styles.buttonContainer, { transform: [{ scale: buttonScale }] }]}>
-                    <TouchableOpacity
-                        style={styles.loginButton}
-                        onPress={handleLogInPress}
-                    >
-                        <Text style={styles.buttonText}>Login</Text>
-                    </TouchableOpacity>
-                </Animated.View>
+
+            <View style={styles.footer }>
+                <Paginator data={slides} scrollX={scrollX} />
+                <TouchableOpacity
+                    style={styles.loginButton}
+                    onPress={handleLogInPress}
+                >
+                    <Text style={styles.signUpButtonText}>Connexion</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.signUpButton}
+                    onPress={handleSignUpPress}
+                >
+                    <Text style={styles.buttonText}>Inscription</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -144,8 +107,12 @@ const styles = StyleSheet.create({
         color: '#888',
     },
     footer: {
+        position: 'absolute',
+        bottom: '-4%',
+        left: 0,
+        right: 0,
         alignItems: 'center',
-        marginBottom: 400,
+        padding: 20,
     },
     buttonContainer: {
         marginBottom: 10,
@@ -155,12 +122,16 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 30,
         borderRadius: 30,
+        marginBottom: '10%',
+        width: '90%',
     },
     loginButton: {
         backgroundColor: '#ADD8E6',
         paddingVertical: 10,
         paddingHorizontal: 30,
         borderRadius: 30,
+        width: '90%',
+        marginBottom: 10,
     },
     buttonText: {
         color: '#fff',
@@ -188,6 +159,7 @@ const styles = StyleSheet.create({
     inactivePaginationDot: {
         backgroundColor: 'rgba(0, 0, 0, 0.32)',
     },
+
 });
 
 export default OnboardingScreen;
