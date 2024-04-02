@@ -13,9 +13,11 @@ npm install
 Une fois les dépendances installées, vous pouvez démarrer le projet en utilisant la commande :
 
 ```
-npm start
+expo start
 ```
 
-Cette commande lancera l'application et vous permettra d'accéder à la gestion de la résidence participative via votre navigateur.
+Cette commande lancera l'application et vous permettra d'accéder à la gestion des médicaments via votre navigateur/téléphone via l'application Expo go.
 
+
+## PS : Le projet ne se lancera pas si vous n'avez pas le fichier env qui contient les clés API de la database Firebase qui enregistre les utilisateurs et leurs historiques
 
