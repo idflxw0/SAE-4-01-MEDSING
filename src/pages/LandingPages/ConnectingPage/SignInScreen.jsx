@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons from expo/vector-icons
 import Header from '../../../../Components/Header';
 import CustomButton from "../components/CustomButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { auth, loginUser } from '../../../config/firebase';
 import { storeUserSession } from "../../../../hook/authSession";
+import { GoogleAuthProvider,
+    signInWithCredential,
+    onAuthStateChanged} from 'firebase/auth';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
 const SignInScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -14,6 +19,29 @@ const SignInScreen = ({ navigation }) => {
     const [emailValid, setEmailValid] = useState(true);
     const [passwordValid, setPasswordValid] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [request,response,promptAsyn] = Google.useAuthRequest({
+        webClientId: '75389818076-ratm58utrcl92vvs7t2q6rlrroc3f3pl.apps.googleusercontent.com',
+        androidClientId: '75389818076-evmgb7aojb26hr82l386b7i7c49ouui3.apps.googleusercontent.com',
+    });
+
+    useEffect(() => {
+        if (response?.type === 'success') {
+            const { id_token } = response.params;
+            const credential = GoogleAuthProvider.credential(id_token);
+            signInWithCredential(auth, credential)
+                .then((userCredential) => {
+                    navigation.navigate('HomeScreen');
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    const email = error.email;
+                    const credential = GoogleAuthProvider.credentialFromError(error);
+                    Alert.alert("Login Failed", errorMessage);
+                });
+        }
+    }, [response]);
 
     const handlePasswordForgot = () => {
         navigation.navigate('ForgotPassword');
@@ -107,7 +135,7 @@ const SignInScreen = ({ navigation }) => {
 
             <Text style={styles.orText}>Or with</Text>
 
-            <TouchableOpacity style={styles.corporateButton} onPress={handleSignIn}>
+            <TouchableOpacity style={styles.corporateButton} onPress={()=>promptAsyn()}>
                 <Image
                     source={require('../../../../assets/LandingImages/google.png')}
                     style={styles.logoImageStyle}

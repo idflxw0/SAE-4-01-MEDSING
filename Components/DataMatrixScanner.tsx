@@ -5,7 +5,6 @@ import { Entypo } from '@expo/vector-icons';
 import productList from '../data/data.json';
 
 
-// @ts-ignore
 const DataMatrixScanner = ({onCipCodeScanned}) => {
     const [cameraActive, setCameraActive] = useState(false);
     const [enableTorch, setTorch] = useState(false);
@@ -34,7 +33,6 @@ const DataMatrixScanner = ({onCipCodeScanned}) => {
             }
             lastTapRef.current = null;
         } else {
-            // @ts-ignore
             lastTapRef.current = now;
             if (!cameraActive) {
                 if (!permission?.granted) {
