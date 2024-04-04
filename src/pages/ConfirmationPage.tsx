@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Animated, Easing } from 'react-native';
+import {View, Text, StyleSheet, Button, Animated, Easing, TouchableOpacity} from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 
 // @ts-ignore
@@ -80,13 +80,22 @@ const ConfirmationPage = ({navigation}) => {
                 Nous vous tenons informé de la situation au plus vite.
             </Text>
 
-            <View style={styles.buttonContainer}>
+            {/*<View style={styles.buttonContainer}>
                 <Button
+
                     title="Retour"
                     color="#E02A2A"
                     onPress={() => navigation.goBack()}
                 />
-            </View>
+            </View>*/}
+            <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.submitButtonWrapper]}>
+                <LinearGradient
+                    colors={['#E02A2A','rgba(224, 42, 42, 1)']}
+                    style={styles.submitButton}
+                >
+                    <Text style={styles.submitButtonText}>Retour</Text>
+                </LinearGradient>
+            </TouchableOpacity>
             <Animated.Image
                 source={require('../../assets/pill right 2.png')}
                 style={{
@@ -178,6 +187,27 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 200,
         resizeMode: 'contain',
+    },
+    submitButtonWrapper: {
+        borderRadius: 42, // Keep the border radius here to maintain the shape
+            marginBottom: 20, // And any other layout-related styles
+            overflow: 'hidden', // Ensures the LinearGradient respects the border radius
+    },
+    submitButton: {
+        paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderRadius: 42,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+    },
+    buttonDisabled: {
+        opacity: 0.5,
+    },
+    submitButtonText: {
+        color: 'white',
+            fontSize: 16,
+            fontWeight: 'bold',
     },
 });
 
