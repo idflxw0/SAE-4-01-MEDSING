@@ -61,7 +61,8 @@ const HomeScreen = ({navigation}) => {
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsConnected(state.isConnected);
             if (state.isConnected) {
-                pushLocalDataToFirestore().then(r => {});
+                pushLocalDataToFirestore().then(r => {
+                    console.log("Pushed to firebase")});
             }
         });
         return () => unsubscribe();
@@ -99,7 +100,7 @@ const HomeScreen = ({navigation}) => {
             const newData = existingData ? [...JSON.parse(existingData), newEntry] : [newEntry];
             await AsyncStorage.setItem('offlineData', JSON.stringify(newData));
             console.log('Saved data locally as offline');
-            Alert.alert('Confirmation', 'Your data has been saved locally and will sync once online.');
+            Alert.alert('Confirmation', 'Vos données ont été enregistrées localement et seront synchronisées une fois en ligne.');
             setCipCode('');
             setProductName('');
             navigation.navigate('ConfirmationPage');

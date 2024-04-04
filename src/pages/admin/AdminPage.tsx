@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, processColor, Modal, FlatList} from 'react-native';
-import { collection, getDocs } from "firebase/firestore";
+import {collection, doc, getDoc, getDocs} from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from "../../../Components/Header";
@@ -20,8 +20,6 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [usersCount, setUsersCount] = useState<number>(0);
     const [signalCount, setSignalCount] = useState<number>(0);
 
-
-
     const handlelisteS = () => {
         navigation.navigate('LDS');
     }
@@ -38,7 +36,32 @@ const AdminPage: React.FC<{ navigation: any }> = ({ navigation }) => {
     }
     usersCount === 0 && fetchUsersCount()
     console.log("users " + usersCount);
+    const fetchTotalMedsCount = async () => {
+        const usersRef = collection(db, "users");
+        const usersSnapshot = await getDocs(usersRef);
+        const medsCountPromises = usersSnapshot.docs.map(async (userDoc) => {
+            const userId = userDoc.id;
+            const userDataDocRef = doc(db, "userData", userId);
+            const userDataDocSnap = await getDoc(userDataDocRef);
 
+            const userHistory = userDataDocSnap.exists() ? userDataDocSnap.data().history || [] : [];
+
+            console.log(`User ID: ${userId}, Meds Count: ${userHistory.length}`);
+
+            return userHistory.length;
+        });
+
+        Promise.all(medsCountPromises).then(medsCounts => {
+            const totalMedsCount = medsCounts.reduce((total, count) => total + count, 0);
+            console.log(`Total medications count: ${totalMedsCount}`);
+            setSignalCount(totalMedsCount);
+        });
+    };
+
+
+    useEffect(() => {
+        fetchTotalMedsCount();
+    }, []);
 
     return (
     <View style={styles.container}>

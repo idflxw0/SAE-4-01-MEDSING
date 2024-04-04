@@ -24,6 +24,5 @@ export default [
         title : 'Scanner vos médicaments',
         description : 'Utilisez votre caméra pour signaler vos médicaments à l’aide du DataMatrix, plutôt que de saisir le code CIP',
         image : require('./assets/LandingImages/scanner.png')
-
     },
 ]
