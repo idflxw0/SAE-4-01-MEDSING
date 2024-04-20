@@ -1,5 +1,5 @@
 ## Application Medsing
-
+![presentation](https://github.com/idflxw0/SAE-4-01-MEDSING/assets/98221552/43db3cb0-8ec0-470a-92b3-4426261f7b05)
 
 
 ## Prérequis
